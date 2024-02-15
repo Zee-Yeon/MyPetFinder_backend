@@ -10,10 +10,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -30,13 +32,13 @@ public class JwtProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
+
+//    public JwtProvider() {
+//        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+//        this.key = Keys.hmacShaKeyFor(keyBytes);
+//    }
+
     public JwtResponse createToken(Authentication authentication) {
-
-        // 권한 가져오기
-//        String authorities = authentication.getAuthorities().stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .collect(Collectors.joining(","));
-
 
         long now = new Date().getTime();
 
@@ -44,7 +46,6 @@ public class JwtProvider {
         Date accessTokenExpires = new Date(now + 43200000);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
-//                .claim("auth", authorities)
                 .setExpiration(accessTokenExpires)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -65,12 +66,15 @@ public class JwtProvider {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJwt(accessToken)
+                .parseClaimsJws(accessToken)
                 .getBody();
 
-        User principal = new User(claims.getSubject(), "", null);
+        /* 권한이 존재하지 않음  => null (x)
+        의미없는 값이라도 Collections.EMPTY_LIST, Collections.singletonList(new SimpleGrantedAuthority(DEFAULT)) 설정하기
+         */
+        User principal = new User(claims.getSubject(), "", Collections.EMPTY_LIST);
 
-        return new UsernamePasswordAuthenticationToken(principal, "", null);
+        return new UsernamePasswordAuthenticationToken(principal, "", Collections.EMPTY_LIST);
     }
 
     public boolean validateToken(String token) {

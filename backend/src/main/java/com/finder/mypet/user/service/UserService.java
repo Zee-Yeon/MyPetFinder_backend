@@ -6,11 +6,13 @@ import com.finder.mypet.jwt.dto.response.JwtResponse;
 import com.finder.mypet.user.domain.entity.User;
 import com.finder.mypet.user.domain.repository.UserRepository;
 import com.finder.mypet.jwt.util.JwtProvider;
+import com.finder.mypet.user.dto.response.UserInfoResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +28,6 @@ public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtProvider jwtProvider;
 
-    public Optional<User> getMember(Long id) {
-        return userRepository.findById(id);
-    }
 
     public void join(String userId, String password, String nickname) {
 
@@ -68,4 +67,12 @@ public class UserService {
 
         return token;
     }
+
+
+//    public UserInfoResponse getInfo(String userId, String nickname) {
+//        User user = userRepository.findByUserId(userId)
+//                .orElseThrow(() -> new UsernameNotFoundException("해당하는 회원이 존재하지 않습니다."));
+//
+//        return new UserInfoResponse(user.getUserId(), user.getNickname());
+//    }
 }
