@@ -3,7 +3,7 @@ package com.finder.mypet.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finder.mypet.exception.AppException;
 import com.finder.mypet.exception.ErrorCode;
-import com.finder.mypet.user.dto.request.UserJoinRequest;
+import com.finder.mypet.user.dto.request.UserRequest;
 import com.finder.mypet.user.dto.request.UserLoginRequest;
 import com.finder.mypet.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -46,7 +46,7 @@ public class UserControllerTest {
         mockMvc.perform(post("/user/join")
                         .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UserJoinRequest(userId, password, nickname))))
+                .content(objectMapper.writeValueAsBytes(new UserRequest(userId, password, nickname))))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -67,7 +67,7 @@ public class UserControllerTest {
         mockMvc.perform(post("/user/join")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new UserJoinRequest(userId, password, nickname))))
+                        .content(objectMapper.writeValueAsBytes(new UserRequest(userId, password, nickname))))
                 .andDo(print())
                 .andExpect(status().isConflict());
     }

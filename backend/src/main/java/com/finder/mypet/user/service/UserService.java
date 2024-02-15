@@ -68,11 +68,26 @@ public class UserService {
         return token;
     }
 
-
     public UserInfoResponse getInfo(String userId) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 회원이 존재하지 않습니다."));
 
         return new UserInfoResponse(user.getUserId(), user.getNickname());
+    }
+
+    public void updateInfo(String userId, String password, String nickname) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("해당하는 회원이 존재하지 않습니다."));
+        User updateUser = User.builder()
+                .id(user.getId())
+                .userId(user.getUserId())
+                .password(password)
+                .nickname(nickname)
+                .build();
+        userRepository.save(updateUser);
+    }
+
+    public void deleteByUserId(String userId) {
+        userRepository.deleteByUserId(userId);
     }
 }
