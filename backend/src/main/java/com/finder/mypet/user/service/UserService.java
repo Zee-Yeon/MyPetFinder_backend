@@ -69,10 +69,10 @@ public class UserService {
     }
 
 
-//    public UserInfoResponse getInfo(String userId, String nickname) {
-//        User user = userRepository.findByUserId(userId)
-//                .orElseThrow(() -> new UsernameNotFoundException("해당하는 회원이 존재하지 않습니다."));
-//
-//        return new UserInfoResponse(user.getUserId(), user.getNickname());
-//    }
+    public UserInfoResponse getInfo(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("해당하는 회원이 존재하지 않습니다."));
+
+        return new UserInfoResponse(user.getUserId(), user.getNickname());
+    }
 }

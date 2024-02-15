@@ -4,20 +4,24 @@ import com.finder.mypet.jwt.dto.response.JwtResponse;
 import com.finder.mypet.user.dto.response.JoinSuccessResponse;
 import com.finder.mypet.user.dto.request.UserJoinRequest;
 import com.finder.mypet.user.dto.request.UserLoginRequest;
+import com.finder.mypet.user.dto.response.UserInfoResponse;
 import com.finder.mypet.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
-//@CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "Authorization")
+@CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "Authorization")
 public class UserController {
 
     private final UserService userService;
@@ -42,11 +46,12 @@ public class UserController {
     }
 
     // 회원정보조회
-//    @GetMapping("/user/mypage")
-//    public ResponseEntity<?> getInfo(@AuthenticationPrincipal Principal principal) {
-//        System.out.println("principal = " + principal);
-//        return ResponseEntity.ok("o");
-//    }
+    @GetMapping("/user/mypage")
+    public ResponseEntity<?> getInfo(@AuthenticationPrincipal User user) {
+        String userId = user.getUsername();
+        UserInfoResponse info = userService.getInfo(userId);
+        return new ResponseEntity<>(info, HttpStatus.OK);
+    }
 
 
     /*
