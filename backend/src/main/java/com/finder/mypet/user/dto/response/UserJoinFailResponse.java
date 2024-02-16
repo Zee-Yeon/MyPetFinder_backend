@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class JoinFailResponse {
+public class UserJoinFailResponse {
         private int status;
         private String message;
 
-    public static JoinFailResponse toDto() {
-        return JoinFailResponse.builder()
+    public static UserJoinFailResponse toDto() {
+        return UserJoinFailResponse.builder()
                 .status(400)
                 .message("이미 존재하는 회원입니다.")
                 .build();

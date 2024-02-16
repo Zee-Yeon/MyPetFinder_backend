@@ -1,6 +1,6 @@
 package com.finder.mypet.exception;
 
-import com.finder.mypet.user.dto.response.JoinFailResponse;
+import com.finder.mypet.user.dto.response.UserJoinFailResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,7 +13,7 @@ public class ExceptionManager {
     public ResponseEntity<?> appExceptionHandler(AppException e) {
 //        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
 //                .body(e.getErrorCode().name() + " " + e.getMessage());
-        JoinFailResponse response = JoinFailResponse.toDto();
+        UserJoinFailResponse response = UserJoinFailResponse.toDto();
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 

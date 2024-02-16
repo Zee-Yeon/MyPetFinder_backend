@@ -32,6 +32,9 @@ public class Board {
     // 조회수
     private int view;
 
+    @Enumerated(EnumType.STRING)
+    private Category category;
+
     @Builder.Default
     private LocalDateTime registered = LocalDateTime.now();
 

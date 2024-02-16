@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class JoinSuccessResponse {
+public class UserJoinSuccessResponse {
     private int status;
     private String message;
 
-    public static JoinSuccessResponse toDto() {
-        return JoinSuccessResponse.builder()
+    public static UserJoinSuccessResponse toDto() {
+        return UserJoinSuccessResponse.builder()
                 .status(200)
                 .message("회원가입 성공")
                 .build();

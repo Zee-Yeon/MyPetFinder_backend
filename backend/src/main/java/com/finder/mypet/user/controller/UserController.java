@@ -1,7 +1,7 @@
 package com.finder.mypet.user.controller;
 
 import com.finder.mypet.jwt.dto.response.JwtResponse;
-import com.finder.mypet.user.dto.response.JoinSuccessResponse;
+import com.finder.mypet.user.dto.response.UserJoinSuccessResponse;
 import com.finder.mypet.user.dto.request.UserRequest;
 import com.finder.mypet.user.dto.request.UserLoginRequest;
 import com.finder.mypet.user.dto.response.UserInfoResponse;
@@ -26,7 +26,7 @@ public class UserController {
     @PostMapping("/user/join")
     public ResponseEntity<?> join(@RequestBody UserRequest dto) {
         userService.join(dto.getUserId(), dto.getPassword(), dto.getNickname());
-        JoinSuccessResponse response = JoinSuccessResponse.toDto();
+        UserJoinSuccessResponse response = UserJoinSuccessResponse.toDto();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
