@@ -52,6 +52,7 @@ public class UserController {
     // 회원 정보 수정
     @PutMapping("/user/mypage")
     public ResponseEntity<?> updateInfo(@AuthenticationPrincipal User user, @RequestBody UserRequest dto) {
+
         String userId = user.getUsername();
         userService.updateInfo(userId, dto.getPassword(), dto.getNickname());
         return new ResponseEntity<>(HttpStatus.OK);
@@ -74,5 +75,4 @@ public class UserController {
         return ResponseEntity.ok(authentication.getName() + "님의 리뷰 등록이 완료 되었음");
     }
      */
-
 }
