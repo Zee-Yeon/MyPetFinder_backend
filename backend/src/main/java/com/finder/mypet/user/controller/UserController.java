@@ -67,12 +67,4 @@ public class UserController {
         userService.deleteByUserId(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    /*
-    // ex.인증된 사람만 게시판에 글 쓰기
-    @PostMapping("/board/*")
-    public ResponseEntity<String> writeReview(Authentication authentication) {
-        return ResponseEntity.ok(authentication.getName() + "님의 리뷰 등록이 완료 되었음");
-    }
-     */
 }

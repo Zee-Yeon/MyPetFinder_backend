@@ -1,5 +1,6 @@
 package com.finder.mypet.board.domain.entity;
 
+import com.finder.mypet.comment.domain.entity.Comment;
 import com.finder.mypet.user.domain.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @NoArgsConstructor
@@ -26,16 +29,16 @@ public class Board {
     @Column(nullable = false, length = 10000)
     private String content;
 
-    private int viewcount;
+    // 조회수
+    private int view;
+
+    @Builder.Default
+    private LocalDateTime registered = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User writer;
 
-
-
-
-
-    @Builder.Default
-    private LocalDateTime registered = LocalDateTime.now();
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
 }

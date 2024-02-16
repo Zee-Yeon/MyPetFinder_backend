@@ -28,7 +28,6 @@ public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtProvider jwtProvider;
 
-
     public void join(String userId, String password, String nickname) {
 
         // userId(email) 중복 check
@@ -49,7 +48,6 @@ public class UserService {
                 .nickname(nickname)
                 .build();
         userRepository.save(user);
-
     }
 
     public JwtResponse login(String userId, String password) {
