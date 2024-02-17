@@ -4,6 +4,7 @@ import com.finder.mypet.board.domain.entity.Board;
 import com.finder.mypet.board.domain.entity.Category;
 import com.finder.mypet.board.domain.repository.BoardRepository;
 import com.finder.mypet.board.dto.request.BoardRequest;
+import com.finder.mypet.board.dto.response.BoardInfoResponse;
 import com.finder.mypet.user.domain.entity.User;
 import com.finder.mypet.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,23 @@ public class BoardService {
         boardRepository.save(board);
     }
 
+    public BoardInfoResponse getBoard(Long id) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 게시물입니다."));
+
+        BoardInfoResponse info = BoardInfoResponse.builder()
+                .category(board.getCategory())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .view(board.getView())
+                .registered(board.getRegistered())
+                .writer(board.getWriter())
+                .commentList(board.getCommentList())
+                .build();
+
+        return info;
+    }
+
     public void edit(String userId, Long boardId, BoardRequest dto) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
@@ -41,8 +59,7 @@ public class BoardService {
                 .orElseThrow(() -> new FindException("존재하지 않는 게시물입니다."));
 
         delete(userId, boardId);
-        // Error : A collection with cascade="all-delete-orphan" was no longer referenced by the owning entity instance
-        // 해당부분을 바꾸고 싶으면 set 하지 말고, 지우고 새로 넣는게 좋음
+
         Board board = Board.builder()
                 .id(user.getId())
                 .category(dto.getCategory())
