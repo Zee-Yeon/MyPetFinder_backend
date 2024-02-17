@@ -10,8 +10,10 @@ import com.finder.mypet.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.module.FindException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,9 +36,13 @@ public class BoardService {
         boardRepository.save(board);
     }
 
+    // 작성자가 조회할 때, 조회수는 올라가지 않음.
+    @Transactional(readOnly = true)
     public BoardInfoResponse getBoard(Long id) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 게시물입니다."));
+
+        User writer = board.getWriter();
 
         BoardInfoResponse info = BoardInfoResponse.builder()
                 .category(board.getCategory())
@@ -44,7 +50,7 @@ public class BoardService {
                 .content(board.getContent())
                 .view(board.getView())
                 .registered(board.getRegistered())
-                .writer(board.getWriter())
+                .writer(writer.getNickname())
                 .commentList(board.getCommentList())
                 .build();
 

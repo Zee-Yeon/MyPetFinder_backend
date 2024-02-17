@@ -34,9 +34,9 @@ public class User {
     @Builder.Default
     private LocalDateTime registered = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "writer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Board> boardList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "writer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 }

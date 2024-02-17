@@ -44,4 +44,9 @@ public class Board {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
+
+    // 조회수 (작성자가 조회할 때, 조회수는 올라가지 않음.)
+    public int getView() {
+        return view + 1;
+    }
 }

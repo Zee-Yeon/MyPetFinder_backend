@@ -23,16 +23,8 @@ public class BoardInfoResponse {
     private String content;
     private LocalDateTime registered;
     private int view;
-    private User writer;
+    private String writer;
     private List<Comment> commentList;
 
-//    public BoardInfoResponse(Board board) {
-//        this.category = board.getCategory();
-//        this.title = board.getTitle();
-//        this.content = board.getContent();
-//        this.registered = board.getRegistered();
-//        this.view = board.getView();
-//        this.writer = board.getWriter();
-//        this.commentList = board.getCommentList().stream().map;
-//    }
+
 }

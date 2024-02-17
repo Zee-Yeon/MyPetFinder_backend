@@ -33,6 +33,8 @@ public class BoardController {
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
 
+    // 수정 삭제 시, 해당 글 작성자가 일치하는지 확인 코드 빠졌음 !!
+
     // 게시글 수정
     @PutMapping("/user/board/{boardId}")
     public ResponseEntity<?> edit(@AuthenticationPrincipal User user, @PathVariable("boardId") Long boardId, @RequestBody BoardRequest dto){
