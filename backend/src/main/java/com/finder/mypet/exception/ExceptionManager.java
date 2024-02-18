@@ -17,11 +17,11 @@ public class ExceptionManager {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<?> runtimeExceptionHandler(RuntimeException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(e.getMessage());
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<?> runtimeExceptionHandler(RuntimeException e) {
+//        return ResponseEntity.status(HttpStatus.CONFLICT)
+//                .body(e.getMessage());
+//    }
 
 
 }

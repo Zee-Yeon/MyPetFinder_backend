@@ -45,8 +45,10 @@ public class Board {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
-    // 조회수 (작성자가 조회할 때, 조회수는 올라가지 않음.)
-    public int getView() {
-        return view + 1;
+    // 해당 게시글을 조회한다는 행위의 메서드
+    public void view(String userId) {
+        if (!userId.equals(writer.getUserId())) {
+            view++;
+        }
     }
 }

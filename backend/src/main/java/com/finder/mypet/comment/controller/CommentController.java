@@ -15,4 +15,12 @@ public class CommentController {
 
     private final CommentService commentService;
 
+//    @PostMapping("/user/comment/{boradId}")
+//    public ResponseEntity<?> save(@AuthenticationPrincipal User user, Long boardId, String content) {
+//        String userId = user.getUsername();
+//
+//        commentService.save(userId, boardId, content);
+//
+//        return new ResponseEntity<>;
+//    }
 }

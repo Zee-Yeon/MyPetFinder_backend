@@ -37,12 +37,13 @@ public class BoardService {
     }
 
     // 작성자가 조회할 때, 조회수는 올라가지 않음.
-    @Transactional(readOnly = true)
-    public BoardInfoResponse getBoard(Long id) {
+    @Transactional
+    public BoardInfoResponse getBoard(String userId, Long id) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 게시물입니다."));
 
         User writer = board.getWriter();
+        board.view(userId);
 
         BoardInfoResponse info = BoardInfoResponse.builder()
                 .category(board.getCategory())

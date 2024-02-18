@@ -4,6 +4,7 @@ import com.finder.mypet.board.dto.request.BoardRequest;
 import com.finder.mypet.board.dto.response.BoardInfoResponse;
 import com.finder.mypet.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class BoardController {
 
     private final BoardService boardService;
@@ -27,8 +29,13 @@ public class BoardController {
 
     // 게시글 조회 (글 상세보기는 비회원도 가능)
     @GetMapping("/board/{boardId}")
-    public ResponseEntity<?> getBoard(@PathVariable("boardId") Long id) {
-        BoardInfoResponse board = boardService.getBoard(id);
+    public ResponseEntity<?> getBoard(@AuthenticationPrincipal User user, @PathVariable("boardId") Long id) {
+        String userId = "";
+        if (user != null) {
+            userId = user.getUsername();
+        }
+
+        BoardInfoResponse board = boardService.getBoard(userId, id);
 
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
