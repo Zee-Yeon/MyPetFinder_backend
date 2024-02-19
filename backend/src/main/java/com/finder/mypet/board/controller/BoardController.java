@@ -23,12 +23,12 @@ public class BoardController {
     public ResponseEntity<?> save(@AuthenticationPrincipal User user, @RequestBody BoardRequest dto) {
         String userId = user.getUsername();
 
-        boardService.save(userId, dto.getCategory(), dto.getTitle(), dto.getContent());
+        boardService.save(userId, dto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 게시글 조회 (글 상세보기는 비회원도 가능)
-    @GetMapping("/board/{boardId}")
+    @GetMapping("/user/board/{boardId}")
     public ResponseEntity<?> getBoard(@AuthenticationPrincipal User user, @PathVariable("boardId") Long id) {
         String userId = "";
         if (user != null) {

@@ -1,12 +1,10 @@
 package com.finder.mypet.board.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.finder.mypet.comment.domain.entity.Comment;
 import com.finder.mypet.user.domain.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Entity
 public class Board {
     @Id
@@ -42,7 +41,7 @@ public class Board {
     @JoinColumn(name = "user_id")
     private User writer;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "board")
     private List<Comment> commentList = new ArrayList<>();
 
     // 해당 게시글을 조회한다는 행위의 메서드

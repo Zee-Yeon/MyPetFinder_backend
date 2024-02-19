@@ -10,12 +10,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class BoardInfoResponse {
 
     private Category category;
@@ -24,7 +27,20 @@ public class BoardInfoResponse {
     private LocalDateTime registered;
     private int view;
     private String writer;
-    private List<Comment> commentList;
+    private List<CommentDto> commentList = new ArrayList<>();
 
+    @Getter
+    public static class CommentDto {
+        private String content;
+        private String writer;
+        private String createdTime;
 
+        public CommentDto(Comment comment) {
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+            this.content = comment.getContent();
+            this.writer = comment.getWriter().getNickname();
+            this.createdTime = comment.getRegistered().format(format);
+        }
+    }
 }

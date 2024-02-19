@@ -11,6 +11,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -18,7 +21,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -28,8 +30,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable);
 
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+
+        http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/board/**").authenticated()
+                        .requestMatchers("/user/mypage").authenticated()
+                        .requestMatchers("/user/board").authenticated()
                         .anyRequest().permitAll());
 
         http
@@ -38,8 +44,28 @@ public class SecurityConfig {
         http
                 .addFilterBefore(new AuthorizationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
 
-
         return http.build();
+    }
+
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("http://10.125.121.182:3000");
+        config.addAllowedMethod("*"); // 교차를 허용할 Method
+        config.addAllowedHeader("*"); // 교차를 허용할 Header
+        config.addExposedHeader("Authorization");
+        config.addExposedHeader("username");
+        config.addExposedHeader("Location");
+        config.setAllowCredentials(true); // 요청/응답에 자격증명정보 포함을 허용
+
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
+
     }
 
 }

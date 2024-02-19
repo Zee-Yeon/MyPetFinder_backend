@@ -17,12 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "Authorization")
 public class UserController {
 
     private final UserService userService;
 
-    // 회원 가입
+    // 회원 가입 [ㅇ]
     @PostMapping("/user/join")
     public ResponseEntity<?> join(@RequestBody UserRequest dto) {
         userService.join(dto.getUserId(), dto.getPassword(), dto.getNickname());
@@ -30,7 +29,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // 로그인 - access token 발급
+    // 로그인 [ㅇ] - access token 발급
     @PostMapping("/user/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequest dto) {
         JwtResponse token = userService.login(dto.getUserId(), dto.getPassword());
@@ -41,7 +40,7 @@ public class UserController {
         return new ResponseEntity<>(httpHeaders, HttpStatus.OK);
     }
 
-    // 회원 정보 조회
+    // 회원 정보 조회 [ㅇ]
     @GetMapping("/user/mypage")
     public ResponseEntity<?> getInfo(@AuthenticationPrincipal User user) {
         String userId = user.getUsername();
@@ -49,7 +48,8 @@ public class UserController {
         return new ResponseEntity<>(info, HttpStatus.OK);
     }
 
-    // 회원 정보 수정
+
+    // 회원 정보 수정 [ ] - userId 중복일 때 에러 잡기
     @PutMapping("/user/mypage")
     public ResponseEntity<?> updateInfo(@AuthenticationPrincipal User user, @RequestBody UserRequest dto) {
 

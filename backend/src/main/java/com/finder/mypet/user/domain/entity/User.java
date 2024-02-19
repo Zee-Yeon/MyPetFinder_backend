@@ -13,6 +13,7 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @Getter
 @Builder
 @Table(name = "Users")

@@ -73,16 +73,22 @@ public class UserService {
         return new UserInfoResponse(user.getUserId(), user.getNickname());
     }
 
+
     public void updateInfo(String userId, String password, String nickname) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 회원이 존재하지 않습니다."));
-        User updateUser = User.builder()
-                .id(user.getId())
-                .userId(user.getUserId())
-                .password(password)
-                .nickname(nickname)
-                .build();
-        userRepository.save(updateUser);
+
+//        User updateUser = User.builder()
+//                .id(user.getId())
+//                .userId(user.getUserId())
+//                .password(password)
+//                .nickname(nickname)
+//                .build();
+
+        user.setPassword(encoder.encode(password));
+        if (nickname != null) user.setNickname(nickname);
+
+        userRepository.save(user);
     }
 
     public void deleteByUserId(String userId) {
