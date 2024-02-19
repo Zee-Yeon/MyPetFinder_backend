@@ -4,6 +4,8 @@ import com.finder.mypet.board.domain.entity.Board;
 import com.finder.mypet.board.domain.repository.BoardRepository;
 import com.finder.mypet.board.dto.request.BoardRequest;
 import com.finder.mypet.board.dto.response.BoardInfoResponse;
+import com.finder.mypet.comment.domain.repository.CommentRepository;
+import com.finder.mypet.comment.dto.response.CommentResponse;
 import com.finder.mypet.user.domain.entity.User;
 import com.finder.mypet.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.module.FindException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +23,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     public void save(String userId, BoardRequest dto) {
         User user = userRepository.findByUserId(userId)
@@ -44,16 +48,16 @@ public class BoardService {
         User writer = board.getWriter();
         board.view(userId);
 
+
         BoardInfoResponse info = BoardInfoResponse.builder()
+                .boardId(board.getId())
                 .category(board.getCategory())
                 .title(board.getTitle())
                 .content(board.getContent())
                 .view(board.getView())
                 .registered(board.getRegistered())
                 .writer(writer.getNickname())
-                .commentList(board.getCommentList().stream()
-                        .map(comment -> new BoardInfoResponse.CommentDto(comment))
-                        .collect(Collectors.toList()))
+                .commentList(board.getCommentList().stream().map(CommentResponse::dto).collect(Collectors.toList()))
                 .build();
 
         return info;

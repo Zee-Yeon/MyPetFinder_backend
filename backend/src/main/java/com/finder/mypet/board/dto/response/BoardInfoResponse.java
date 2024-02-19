@@ -3,6 +3,7 @@ package com.finder.mypet.board.dto.response;
 import com.finder.mypet.board.domain.entity.Board;
 import com.finder.mypet.board.domain.entity.Category;
 import com.finder.mypet.comment.domain.entity.Comment;
+import com.finder.mypet.comment.dto.response.CommentResponse;
 import com.finder.mypet.user.domain.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,26 +22,13 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class BoardInfoResponse {
 
+    private Long boardId;
     private Category category;
     private String title;
     private String content;
     private LocalDateTime registered;
     private int view;
     private String writer;
-    private List<CommentDto> commentList = new ArrayList<>();
+    private List<CommentResponse> commentList;
 
-    @Getter
-    public static class CommentDto {
-        private String content;
-        private String writer;
-        private String createdTime;
-
-        public CommentDto(Comment comment) {
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-            this.content = comment.getContent();
-            this.writer = comment.getWriter().getNickname();
-            this.createdTime = comment.getRegistered().format(format);
-        }
-    }
 }

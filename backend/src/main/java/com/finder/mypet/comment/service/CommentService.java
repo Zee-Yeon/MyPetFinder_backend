@@ -4,12 +4,15 @@ import com.finder.mypet.board.domain.entity.Board;
 import com.finder.mypet.board.domain.repository.BoardRepository;
 import com.finder.mypet.comment.domain.entity.Comment;
 import com.finder.mypet.comment.domain.repository.CommentRepository;
-import com.finder.mypet.comment.dto.request.CommentSaveRequest;
+import com.finder.mypet.comment.dto.request.CommentRequest;
 import com.finder.mypet.user.domain.entity.User;
 import com.finder.mypet.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +22,8 @@ public class CommentService {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
 
-    public void save(String userId, Long boardId, CommentSaveRequest dto) {
-
+    @Transactional
+    public void save(String userId, Long boardId, CommentRequest dto) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
 
@@ -35,4 +38,29 @@ public class CommentService {
 
         commentRepository.save(comment);
     }
+
+    @Transactional
+    public void updateComment(String userId, Long commentId, CommentRequest dto) {
+        userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 댓글입니다."));
+
+        if (dto.getContent() != null) comment.setContent(dto.getContent());
+
+        commentRepository.save(comment);
+    }
+
+    @Transactional
+    public void deleteComment(String userId, Long commentId) {
+        userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
+
+        commentRepository.findById(commentId)
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 댓글입니다."));
+
+        commentRepository.deleteById(commentId);
+    }
 }
+
