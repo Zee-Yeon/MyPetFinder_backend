@@ -1,10 +1,12 @@
 package com.finder.mypet.board.controller;
 
+import com.finder.mypet.board.domain.entity.Category;
 import com.finder.mypet.board.dto.request.BoardRequest;
 import com.finder.mypet.board.dto.response.BoardInfoResponse;
 import com.finder.mypet.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,7 +29,7 @@ public class BoardController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // 게시글 조회 (글 상세보기는 비회원도 가능)
+    // 게시글 상세보기 (비회원도 가능)
     @GetMapping("/user/board/{boardId}")
     public ResponseEntity<?> getBoard(@AuthenticationPrincipal User user, @PathVariable("boardId") Long id) {
         String userId = "";
@@ -39,6 +41,19 @@ public class BoardController {
 
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
+
+    // 게시글 전체 조회
+    @GetMapping("/boards")
+    // 카테고리, 조회수, 최신순
+    public void readAll(@RequestParam(required = false) Category category,
+                                     @RequestParam(required = false, defaultValue = "0", value = "view") int view,
+                                     @RequestParam(required = false, defaultValue = "id", value = "orderby") String boardId,
+                                     Pageable pageable) {
+
+        System.out.println("readAll");
+    }
+
+
 
     // 수정 삭제 시, 해당 글 작성자가 일치하는지 확인 코드 빠졌음 !!
 

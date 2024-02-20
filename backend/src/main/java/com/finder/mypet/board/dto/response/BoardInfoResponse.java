@@ -26,7 +26,7 @@ public class BoardInfoResponse {
     private Category category;
     private String title;
     private String content;
-    private LocalDateTime registered;
+    private String registered;
     private int view;
     private String writer;
     private List<CommentResponse> commentList;

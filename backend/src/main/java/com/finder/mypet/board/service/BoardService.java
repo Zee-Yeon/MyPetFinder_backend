@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.module.FindException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,7 @@ public class BoardService {
         User writer = board.getWriter();
         board.view(userId);
 
+        DateTimeFormatter format =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         BoardInfoResponse info = BoardInfoResponse.builder()
                 .boardId(board.getId())
@@ -55,7 +57,7 @@ public class BoardService {
                 .title(board.getTitle())
                 .content(board.getContent())
                 .view(board.getView())
-                .registered(board.getRegistered())
+                .registered(board.getRegistered().format(format))
                 .writer(writer.getNickname())
                 .commentList(board.getCommentList().stream().map(CommentResponse::dto).collect(Collectors.toList()))
                 .build();
