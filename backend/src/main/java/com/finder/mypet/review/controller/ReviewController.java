@@ -1,18 +1,19 @@
 package com.finder.mypet.review.controller;
 
-import com.finder.mypet.board.domain.entity.Category;
-import com.finder.mypet.board.dto.request.BoardRequest;
 import com.finder.mypet.review.dto.request.ReviewRequest;
+import com.finder.mypet.review.dto.response.ReviewAllInfoResponse;
 import com.finder.mypet.review.dto.response.ReviewInfoResponse;
 import com.finder.mypet.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -37,16 +38,18 @@ public class ReviewController {
 
         return new ResponseEntity<>(review, HttpStatus.OK);
     }
-//
-//    // 게시글 전체 조회
-//    @GetMapping("/boards")
-//    // 카테고리, 조회수, 최신순
-//    public void readAll(@RequestParam(required = false, defaultValue = "0", value = "view") int view,
-//                        @RequestParam(required = false, defaultValue = "id", value = "orderby") String boardId,
-//                        Pageable pageable) {
-//
-//        System.out.println("readAll");
-//    }
+
+    // 리뷰 전체 조회
+    @GetMapping("/reviews/{shelter}")
+    public ResponseEntity<?> readAll(@RequestParam(required = false, defaultValue = "1", value = "page") Integer pageNo,
+                                     @PathVariable(name = "shelter", required = false) Long shelterId) {
+
+        if (pageNo == null) pageNo = 1;
+
+        Page<ReviewAllInfoResponse> reviewList =  reviewService.readAll(pageNo, shelterId);
+
+        return new ResponseEntity<>(reviewList, HttpStatus.OK);
+    }
 
 
     // 리뷰 수정

@@ -32,6 +32,7 @@ public class CommentController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // 댓글 삭제
     @DeleteMapping("/user/comment/{commentId}")
     public ResponseEntity<?> deleteComment(@AuthenticationPrincipal User user, @PathVariable("commentId") Long commentId) {
         String userId = user.getUsername();

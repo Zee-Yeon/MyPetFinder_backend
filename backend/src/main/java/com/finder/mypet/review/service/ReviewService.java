@@ -1,28 +1,36 @@
 package com.finder.mypet.review.service;
 
-import com.finder.mypet.board.domain.entity.Board;
-import com.finder.mypet.board.dto.request.BoardRequest;
 import com.finder.mypet.review.domain.entity.Review;
 import com.finder.mypet.review.domain.repository.ReviewRepository;
 import com.finder.mypet.review.dto.request.ReviewRequest;
+import com.finder.mypet.review.dto.response.ReviewAllInfoResponse;
 import com.finder.mypet.review.dto.response.ReviewInfoResponse;
 import com.finder.mypet.user.domain.entity.User;
 import com.finder.mypet.user.domain.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.lang.module.FindException;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public void save(String userId, ReviewRequest dto) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
@@ -54,6 +62,14 @@ public class ReviewService {
         return info;
     }
 
+    public Page<ReviewAllInfoResponse> readAll(Integer pageNo, Long shelterId) {
+
+        Pageable pageable = PageRequest.of(pageNo, 20, Sort.Direction.ASC, "rating");
+        Page<ReviewAllInfoResponse> review = reviewRepository.findAllByShelter(shelterId, pageable).map(ReviewAllInfoResponse::dto);
+
+        return review;
+    }
+
 
     @Transactional
     public void edit(String userId, Long reviewId, ReviewRequest dto) {
@@ -70,6 +86,7 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
+    @Transactional
     public void delete(String userId, Long reviewId) {
         userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
@@ -79,4 +96,6 @@ public class ReviewService {
 
         reviewRepository.deleteById(reviewId);
     }
+
+
 }

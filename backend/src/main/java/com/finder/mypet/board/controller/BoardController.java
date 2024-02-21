@@ -46,6 +46,7 @@ public class BoardController {
     @GetMapping("/boards")
     public ResponseEntity<?> readAll(@RequestParam(required = false, defaultValue = "1", value = "page") Integer pageNo) {
         if (pageNo == null) pageNo = 1;
+
         Page<BoardAllInfoResponse> boardList = boardService.readAll(pageNo);
 
         return new ResponseEntity<>(boardList, HttpStatus.OK);
