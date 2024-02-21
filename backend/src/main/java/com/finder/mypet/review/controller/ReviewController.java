@@ -39,7 +39,7 @@ public class ReviewController {
         return new ResponseEntity<>(review, HttpStatus.OK);
     }
 
-    // 리뷰 전체 조회
+    // 리뷰 전체 조회(rating 높은 기준으로 정렬)
     @GetMapping("/reviews/{shelter}")
     public ResponseEntity<?> readAll(@RequestParam(required = false, defaultValue = "1", value = "page") Integer pageNo,
                                      @PathVariable(name = "shelter", required = false) Long shelterId) {

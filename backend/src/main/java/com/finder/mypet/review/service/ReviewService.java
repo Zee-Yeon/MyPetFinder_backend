@@ -64,7 +64,7 @@ public class ReviewService {
 
     public Page<ReviewAllInfoResponse> readAll(Integer pageNo, Long shelterId) {
 
-        Pageable pageable = PageRequest.of(pageNo, 20, Sort.Direction.ASC, "rating");
+        Pageable pageable = PageRequest.of(pageNo - 1, 20, Sort.Direction.DESC, "rating");
         Page<ReviewAllInfoResponse> review = reviewRepository.findAllByShelter(shelterId, pageable).map(ReviewAllInfoResponse::dto);
 
         return review;
