@@ -2,6 +2,7 @@ package com.finder.mypet.user.domain.entity;
 
 import com.finder.mypet.board.domain.entity.Board;
 import com.finder.mypet.comment.domain.entity.Comment;
+import com.finder.mypet.review.domain.entity.Review;
 import com.finder.mypet.user.dto.request.UserLoginRequest;
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,4 +41,7 @@ public class User {
 
     @OneToMany(mappedBy = "writer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "writer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviewList = new ArrayList<>();
 }

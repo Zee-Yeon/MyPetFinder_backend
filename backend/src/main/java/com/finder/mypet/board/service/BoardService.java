@@ -24,7 +24,6 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
 
     public void save(String userId, BoardRequest dto) {
         User user = userRepository.findByUserId(userId)
