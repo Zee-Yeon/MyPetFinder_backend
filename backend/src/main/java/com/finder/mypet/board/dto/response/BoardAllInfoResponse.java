@@ -2,17 +2,13 @@ package com.finder.mypet.board.dto.response;
 
 import com.finder.mypet.board.domain.entity.Board;
 import com.finder.mypet.board.domain.entity.Category;
-import com.finder.mypet.comment.domain.entity.Comment;
 import com.finder.mypet.comment.dto.response.CommentResponse;
-import com.finder.mypet.user.domain.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,8 +16,7 @@ import java.util.stream.Collectors;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardInfoResponse {
-
+public class BoardAllInfoResponse {
     private Long boardId;
     private Category category;
     private String title;
@@ -29,12 +24,12 @@ public class BoardInfoResponse {
     private String registered;
     private int view;
     private String writer;
-    private List<CommentResponse> commentList;
+    private int commentList;
 
-    public static BoardInfoResponse dto(Board board) {
+    public static BoardAllInfoResponse dto(Board board) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        return BoardInfoResponse.builder()
+        return BoardAllInfoResponse.builder()
                 .boardId(board.getId())
                 .category(board.getCategory())
                 .title(board.getTitle())
@@ -42,7 +37,7 @@ public class BoardInfoResponse {
                 .view(board.getView())
                 .registered(board.getRegistered().format(format))
                 .writer(board.getWriter().getNickname())
-                .commentList(board.getCommentList().stream().map(CommentResponse::dto).collect(Collectors.toList()))
+                .commentList(board.getCommentList().size())
                 .build();
     }
 }

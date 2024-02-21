@@ -3,12 +3,17 @@ package com.finder.mypet.board.service;
 import com.finder.mypet.board.domain.entity.Board;
 import com.finder.mypet.board.domain.repository.BoardRepository;
 import com.finder.mypet.board.dto.request.BoardRequest;
+import com.finder.mypet.board.dto.response.BoardAllInfoResponse;
 import com.finder.mypet.board.dto.response.BoardInfoResponse;
 import com.finder.mypet.comment.domain.repository.CommentRepository;
 import com.finder.mypet.comment.dto.response.CommentResponse;
 import com.finder.mypet.user.domain.entity.User;
 import com.finder.mypet.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +30,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public void save(String userId, BoardRequest dto) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
@@ -50,18 +56,18 @@ public class BoardService {
 
         DateTimeFormatter format =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        BoardInfoResponse info = BoardInfoResponse.builder()
-                .boardId(board.getId())
-                .category(board.getCategory())
-                .title(board.getTitle())
-                .content(board.getContent())
-                .view(board.getView())
-                .registered(board.getRegistered().format(format))
-                .writer(writer.getNickname())
-                .commentList(board.getCommentList().stream().map(CommentResponse::dto).collect(Collectors.toList()))
-                .build();
+        BoardInfoResponse info = BoardInfoResponse.dto(board);
 
         return info;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<BoardAllInfoResponse> readAll(Integer pageNo) {
+
+        Pageable pageable = PageRequest.of(pageNo-1, 10, Sort.Direction.DESC, "registered");
+        Page<BoardAllInfoResponse> board = boardRepository.findAll(pageable).map(BoardAllInfoResponse::dto);
+
+        return board;
     }
 
     @Transactional
@@ -72,13 +78,16 @@ public class BoardService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new FindException("존재하지 않는 게시물입니다."));
 
-        board.setCategory(dto.getCategory());
-        board.setTitle(dto.getTitle());
-        board.setContent(dto.getContent());
+        if (user.equals(board.getWriter())) {
+            board.setCategory(dto.getCategory());
+            board.setTitle(dto.getTitle());
+            board.setContent(dto.getContent());
 
-        boardRepository.save(board);
+            boardRepository.save(board);
+        }
     }
 
+    @Transactional
     public void delete(String userId, Long boardId) {
         userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
@@ -88,4 +97,5 @@ public class BoardService {
 
         boardRepository.deleteById(boardId);
     }
+
 }

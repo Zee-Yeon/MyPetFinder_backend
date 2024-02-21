@@ -1,12 +1,12 @@
 package com.finder.mypet.board.controller;
 
-import com.finder.mypet.board.domain.entity.Category;
 import com.finder.mypet.board.dto.request.BoardRequest;
+import com.finder.mypet.board.dto.response.BoardAllInfoResponse;
 import com.finder.mypet.board.dto.response.BoardInfoResponse;
 import com.finder.mypet.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -42,18 +42,14 @@ public class BoardController {
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
 
-    // 게시글 전체 조회
+    // 게시글 전체 조회 (커뮤니티 + Q&A)
     @GetMapping("/boards")
-    // 카테고리, 조회수, 최신순
-    public void readAll(@RequestParam(required = false) Category category,
-                                     @RequestParam(required = false, defaultValue = "0", value = "view") int view,
-                                     @RequestParam(required = false, defaultValue = "id", value = "orderby") String boardId,
-                                     Pageable pageable) {
+    public ResponseEntity<?> readAll(@RequestParam(required = false, defaultValue = "1", value = "page") Integer pageNo) {
+        if (pageNo == null) pageNo = 1;
+        Page<BoardAllInfoResponse> boardList = boardService.readAll(pageNo);
 
-        System.out.println("readAll");
+        return new ResponseEntity<>(boardList, HttpStatus.OK);
     }
-
-
 
     // 수정 삭제 시, 해당 글 작성자가 일치하는지 확인 코드 빠졌음 !!
 

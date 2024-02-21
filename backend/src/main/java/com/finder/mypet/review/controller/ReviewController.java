@@ -39,10 +39,9 @@ public class ReviewController {
     }
 //
 //    // 게시글 전체 조회
-//    @GetMapping("/boards/{category}")
+//    @GetMapping("/boards")
 //    // 카테고리, 조회수, 최신순
-//    public void readAll(@PathVariable(required = false) Category category,
-//                        @RequestParam(required = false, defaultValue = "0", value = "view") int view,
+//    public void readAll(@RequestParam(required = false, defaultValue = "0", value = "view") int view,
 //                        @RequestParam(required = false, defaultValue = "id", value = "orderby") String boardId,
 //                        Pageable pageable) {
 //
