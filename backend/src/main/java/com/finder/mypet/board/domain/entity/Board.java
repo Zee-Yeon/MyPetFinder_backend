@@ -43,6 +43,7 @@ public class Board {
     private User writer;
 
     @OneToMany(mappedBy = "board")
+    @OrderBy(clause = "registered DESC")
     private List<Comment> commentList = new ArrayList<>();
 
     // 해당 게시글을 조회한다는 행위의 메서드

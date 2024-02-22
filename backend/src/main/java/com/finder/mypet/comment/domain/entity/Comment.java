@@ -5,6 +5,8 @@ import com.finder.mypet.board.domain.entity.Board;
 import com.finder.mypet.user.domain.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OrderBy;
+import org.springframework.core.annotation.Order;
 
 import java.time.LocalDateTime;
 

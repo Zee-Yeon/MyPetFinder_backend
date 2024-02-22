@@ -1,6 +1,7 @@
 package com.finder.mypet.board.service;
 
 import com.finder.mypet.board.domain.entity.Board;
+import com.finder.mypet.board.domain.entity.Category;
 import com.finder.mypet.board.domain.repository.BoardRepository;
 import com.finder.mypet.board.dto.request.BoardRequest;
 import com.finder.mypet.board.dto.response.BoardAllInfoResponse;
@@ -69,6 +70,35 @@ public class BoardService {
 
         return board;
     }
+
+    @Transactional(readOnly = true)
+    public Page<BoardAllInfoResponse> readCategory(Category category, Integer pageNo, String order, String keyword) {
+
+        order = (order == null) ? "registered" : "view";
+
+        Pageable pageable = PageRequest.of(pageNo-1, 10, Sort.Direction.DESC, order);
+
+        Page<BoardAllInfoResponse> board;
+
+        if (keyword == null) {
+            board = (category == null)
+                    ? boardRepository.findAll(pageable).map(BoardAllInfoResponse::dto)
+                    : boardRepository.findAllByCategory(category, pageable).map(BoardAllInfoResponse::dto);
+        } else {
+            board = boardRepository.findAllByTitleContaining(keyword, pageable).map(BoardAllInfoResponse::dto);
+        }
+
+        return board;
+    }
+//
+//    @Transactional(readOnly = true)
+//    public Page<BoardAllInfoResponse> searchKeyword(String search, Integer pageNo) {
+//
+//        Pageable pageable = PageRequest.of(pageNo-1, 10, Sort.Direction.DESC, "registered");
+//        Page<BoardAllInfoResponse> board = boardRepository.findAllByTitleContaining(search, pageable).map(BoardAllInfoResponse::dto);
+//
+//        return board;
+//    }
 
     @Transactional
     public void edit(String userId, Long boardId, BoardRequest dto) {

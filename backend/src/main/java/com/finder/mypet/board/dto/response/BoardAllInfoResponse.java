@@ -24,7 +24,7 @@ public class BoardAllInfoResponse {
     private String registered;
     private int view;
     private String writer;
-    private int commentList;
+    private int commentCount;
 
     public static BoardAllInfoResponse dto(Board board) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -37,7 +37,7 @@ public class BoardAllInfoResponse {
                 .view(board.getView())
                 .registered(board.getRegistered().format(format))
                 .writer(board.getWriter().getNickname())
-                .commentList(board.getCommentList().size())
+                .commentCount(board.getCommentList().size())
                 .build();
     }
 }
