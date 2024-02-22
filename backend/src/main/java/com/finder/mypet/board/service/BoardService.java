@@ -51,11 +51,7 @@ public class BoardService {
     public BoardInfoResponse getBoard(String userId, Long id) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 게시물입니다."));
-
-        User writer = board.getWriter();
         board.view(userId);
-
-        DateTimeFormatter format =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         BoardInfoResponse info = BoardInfoResponse.dto(board);
 
@@ -80,7 +76,8 @@ public class BoardService {
 
         Page<BoardAllInfoResponse> board;
 
-        if (keyword == null) {
+        if (keyword.isEmpty()
+        ) {
             board = (category == null)
                     ? boardRepository.findAll(pageable).map(BoardAllInfoResponse::dto)
                     : boardRepository.findAllByCategory(category, pageable).map(BoardAllInfoResponse::dto);

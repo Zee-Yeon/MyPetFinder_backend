@@ -61,7 +61,7 @@ public class BoardController {
     public ResponseEntity<?> readCategory(@RequestParam(required = false) Category category,
                                           @RequestParam(required = false, defaultValue = "1", value = "page")Integer pageNo,
                                           @RequestParam(required = false, defaultValue = "registered") String order,
-                                          @RequestParam("keyword") String keyword) {
+                                          @RequestParam(defaultValue = "") String keyword) {
 
         Page<BoardAllInfoResponse> boardList = boardService.readCategory(category, pageNo, order, keyword);
 
