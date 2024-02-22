@@ -5,6 +5,7 @@ import com.finder.mypet.comment.domain.entity.Comment;
 import com.finder.mypet.user.domain.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OrderBy;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

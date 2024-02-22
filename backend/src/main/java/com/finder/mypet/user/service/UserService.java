@@ -7,6 +7,7 @@ import com.finder.mypet.user.domain.entity.User;
 import com.finder.mypet.user.domain.repository.UserRepository;
 import com.finder.mypet.jwt.util.JwtProvider;
 import com.finder.mypet.user.dto.response.UserInfoResponse;
+import com.finder.mypet.user.dto.response.UserNicknameResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -78,13 +79,6 @@ public class UserService {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 회원이 존재하지 않습니다."));
 
-//        User updateUser = User.builder()
-//                .id(user.getId())
-//                .userId(user.getUserId())
-//                .password(password)
-//                .nickname(nickname)
-//                .build();
-
         user.setPassword(encoder.encode(password));
         if (nickname != null) user.setNickname(nickname);
 
@@ -93,5 +87,12 @@ public class UserService {
 
     public void deleteByUserId(String userId) {
         userRepository.deleteByUserId(userId);
+    }
+
+    public UserNicknameResponse getNickname(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("해당하는 회원이 존재하지 않습니다."));
+
+        return new UserNicknameResponse(user.getNickname());
     }
 }
