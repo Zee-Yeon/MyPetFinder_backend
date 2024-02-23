@@ -1,5 +1,7 @@
 package com.finder.mypet.jwt.util;
 
+import com.finder.mypet.common.advice.exception.CustomException;
+import com.finder.mypet.common.response.ResponseCode;
 import com.finder.mypet.jwt.dto.response.JwtResponse;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -92,6 +94,21 @@ public class JwtProvider {
         }
         return false;
     }
+
+//    public boolean validateToken(String token) {
+//        try {
+//            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+//            return true;
+//        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+//            throw new CustomException(ResponseCode.NOT_INVALID_JWT);
+//        } catch (ExpiredJwtException e) {
+//            throw new CustomException(ResponseCode.EXPIRED_JWT);
+//        } catch (UnsupportedJwtException e) {
+//            throw new CustomException(ResponseCode.UNSUPPORTED_JWT);
+//        } catch (IllegalArgumentException e) {
+//            throw new CustomException(ResponseCode.ILLEGAL_JWT);
+//        }
+//    }
 
     private Claims parseClaims(String accessToken) {
         try {

@@ -1,5 +1,7 @@
 package com.finder.mypet.user.service;
 
+import com.finder.mypet.common.advice.exception.CustomException;
+import com.finder.mypet.common.response.ResponseCode;
 import com.finder.mypet.exception.AppException;
 import com.finder.mypet.exception.ErrorCode;
 import com.finder.mypet.jwt.dto.response.JwtResponse;
@@ -16,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -29,20 +32,11 @@ public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtProvider jwtProvider;
 
+    @Transactional  // deleteBy 를 사용하여 직접 조건을 거는 경우에는 직접 붙여줘야 함.
     public void join(String userId, String password, String nickname) {
+        findByUserId(userId);
+        findByNickname(nickname);
 
-        // userId(email) 중복 check
-        userRepository.findByUserId(userId)
-                .ifPresent(user -> {
-                    throw new AppException(ErrorCode.USERID_DUPLICATED, userId + "는 이미 존재하는 회원입니다 .");
-                });
-
-        userRepository.findByNickname(nickname)
-                .ifPresent(user -> {
-                    throw new AppException(ErrorCode.NICKNAME_DUPLICATED, nickname + "는 이미 존재하는 닉네임입니다.");
-                });
-
-        // 저장
         User user = User.builder()
                 .userId(userId)
                 .password(encoder.encode(password))
@@ -51,16 +45,14 @@ public class UserService {
         userRepository.save(user);
     }
 
+    // access token 발급
     public JwtResponse login(String userId, String password) {
-
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, password);
-
         // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
         // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         JwtResponse token = jwtProvider.createToken(authentication);
 
@@ -69,30 +61,53 @@ public class UserService {
 
     public UserInfoResponse getInfo(String userId) {
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("해당하는 회원이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
 
         return new UserInfoResponse(user.getUserId(), user.getNickname());
     }
 
-
+    @Transactional  // deleteBy 를 사용하여 직접 조건을 거는 경우에는 직접 붙여줘야 함.
     public void updateInfo(String userId, String password, String nickname) {
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("해당하는 회원이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
 
+        userRepository.findByPassword(password)
+                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_PASSWORD));
+
+        findByNickname(nickname);
         user.setPassword(encoder.encode(password));
         if (nickname != null) user.setNickname(nickname);
 
         userRepository.save(user);
     }
 
+    @Transactional  // deleteBy 를 사용하여 직접 조건을 거는 경우에는 직접 붙여줘야 함.
     public void deleteByUserId(String userId) {
-        userRepository.deleteByUserId(userId);
+        Optional<User> user = userRepository.findByUserId(userId);
+        if (user.isPresent()) {
+            userRepository.deleteByUserId(userId)
+                    .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
+        }
     }
 
     public UserNicknameResponse getNickname(String userId) {
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("해당하는 회원이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
 
         return new UserNicknameResponse(user.getNickname());
+    }
+
+    public void findByUserId(String userId) {
+        userRepository.findByUserId(userId)     // userId(email) 중복 check
+                .ifPresent(user -> {
+                    throw new CustomException(ResponseCode.USER_ALREADY_EXIST);
+                });
+    }
+
+    public void findByNickname(String nickname) {
+        userRepository.findByNickname(nickname) // nickname 중복 check
+                .ifPresent(user -> {
+                    throw new CustomException(ResponseCode.NICKNAME_ALREADY_EXIST);
+                });
     }
 }
