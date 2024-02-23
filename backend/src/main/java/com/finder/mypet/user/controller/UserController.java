@@ -46,7 +46,7 @@ public class UserController {
         return new ResponseEntity<>(nickname, httpHeaders, SUCCESS_LOGIN.getHttpStatus());
     }
 
-    // 회원 정보 조회 [△]
+    // 회원 정보 조회 [ㅇ]
     @GetMapping("/user/mypage")
     public ResponseEntity<?> getInfo(@AuthenticationPrincipal User user) {
         String userId = user.getUsername();
@@ -55,7 +55,7 @@ public class UserController {
     }
 
 
-    // 회원 정보 수정 [ㅇ] - userId 중복일 때 에러 잡기
+    // 회원 정보 수정 [ㅇ]
     @PutMapping("/user/mypage")
     public ResponseEntity<?> updateInfo(@AuthenticationPrincipal User user, @RequestBody UserRequest dto) {
         String userId = user.getUsername();

@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ResponseCode {
 
-    // 200 USER_SUCCESS
+    // USER_SUCCESS
     SUCCESS_SIGNUP(successCode(), HttpStatus.OK, "회원가입이 성공적으로 완료되었습니다."),
     SUCCESS_LOGIN(successCode(), HttpStatus.OK, "로그인이 성공적으로 완료되었습니다."),
     SEARCH_MYPAGE(successCode(), HttpStatus.OK, "회원 정보 조회가 성공적으로 조회되었습니다.."),
@@ -23,11 +23,17 @@ public enum ResponseCode {
     EDIT_REVIEW(successCode(), HttpStatus.OK, "리뷰 수정이 성공적으로 완료되었습니다."),
     DELETE_REVIEW(successCode(), HttpStatus.OK, "리뷰가 성공적으로 삭제되었습니다."),
 
+    // BOARD_SUCCESS
     CREATE_BOARD(successCode(), HttpStatus.OK, "게시물 작성이 완료되었습니다."),
     GET_BOARD(successCode(), HttpStatus.OK, "게시물 상세보기가 성공적으로 조회되었습니다."),
     GET_BOARDS(successCode(), HttpStatus.OK, "게시물 전체보기가 성공적으로 조회되었습니다."),
     EDIT_BOARDS(successCode(), HttpStatus.OK, "게시물 수정이 성공적으로 완료되었습니다."),
     DELETE_BOARD(successCode(), HttpStatus.OK, "게시물이 성공적으로 삭제되었습니다."),
+
+    // COMMENT_SUCCESS
+    CREATE_COMMENT(successCode(), HttpStatus.OK, "댓글 작성이 완료되었습니다."),
+    EDIT_COMMENT(successCode(), HttpStatus.OK, "댓글 수정이 성공적으로 완료되었습니다."),
+    DELETE_COMMENT(successCode(), HttpStatus.OK, "댓글이 성공적으로 삭제되었습니다."),
 
     // 400
     BAD_REQUEST(400, HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
@@ -48,6 +54,7 @@ public enum ResponseCode {
 
     NOT_FOUND_BOARD(404, HttpStatus.NOT_FOUND, "해당 게시물이 존재하지 않습니다."),
 
+    NOT_FOUND_COMMENT(404, HttpStatus.NOT_FOUND, "해당 댓글이 존재하지 않습니다."),
 
     // 409 (CONFLICT 중복된 리소스)
     USER_ALREADY_EXIST(409, HttpStatus.CONFLICT, "이미 존재하는 회원 정보입니다."),
