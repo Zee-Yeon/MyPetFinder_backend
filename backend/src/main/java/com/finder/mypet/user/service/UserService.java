@@ -6,6 +6,7 @@ import com.finder.mypet.jwt.dto.response.JwtResponse;
 import com.finder.mypet.user.domain.entity.User;
 import com.finder.mypet.user.domain.repository.UserRepository;
 import com.finder.mypet.jwt.util.JwtProvider;
+import com.finder.mypet.user.dto.request.UserRequest;
 import com.finder.mypet.user.dto.response.UserInfoResponse;
 import com.finder.mypet.user.dto.response.UserNicknameResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,14 +32,14 @@ public class UserService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public void join(String userId, String password, String nickname) {
-        findByUserId(userId);
-        findByNickname(nickname);
+    public void join(UserRequest dto) {
+        findByUserId(dto.getUserId());
+        findByNickname(dto.getNickname());
 
         User user = User.builder()
-                .userId(userId)
-                .password(encoder.encode(password))
-                .nickname(nickname)
+                .userId(dto.getUserId())
+                .password(encoder.encode(dto.getPassword()))
+                .nickname(dto.getNickname())
                 .build();
         userRepository.save(user);
     }
@@ -65,16 +66,13 @@ public class UserService {
     }
 
     @Transactional
-    public void updateInfo(String userId, String password, String nickname) {
+    public void updateInfo(String userId, UserRequest dto) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
 
-        userRepository.findByPassword(password)
-                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_PASSWORD));
-
-        findByNickname(nickname);
-        user.setPassword(encoder.encode(password));
-        if (nickname != null) user.setNickname(nickname);
+        findByNickname(dto.getNickname());
+        user.setPassword(encoder.encode(dto.getPassword()));
+        if (dto.getNickname() != null) user.setNickname(dto.getNickname());
 
         userRepository.save(user);
     }

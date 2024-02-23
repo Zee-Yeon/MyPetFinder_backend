@@ -29,7 +29,7 @@ public class UserController {
     // 회원 가입 [ㅇ]
     @PostMapping("/user/join")
     public ResponseEntity<?> join(@RequestBody UserRequest dto) {
-        userService.join(dto.getUserId(), dto.getPassword(), dto.getNickname());
+        userService.join(dto);
         return new ResponseEntity<>(Response.create(SUCCESS_SIGNUP, null), SUCCESS_SIGNUP.getHttpStatus());
     }
 
@@ -59,7 +59,7 @@ public class UserController {
     @PutMapping("/user/mypage")
     public ResponseEntity<?> updateInfo(@AuthenticationPrincipal User user, @RequestBody UserRequest dto) {
         String userId = user.getUsername();
-        userService.updateInfo(userId, dto.getPassword(), dto.getNickname());
+        userService.updateInfo(userId, dto);
         return new ResponseEntity<>(Response.create(SUCCESS_EDIT, null), SUCCESS_EDIT.getHttpStatus());
     }
 
