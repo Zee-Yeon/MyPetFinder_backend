@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ResponseCode {
 
-    // 200 성공 (user)
+    // 200 USER_SUCCESS
     SUCCESS_SIGNUP(successCode(), HttpStatus.OK, "회원가입이 성공적으로 완료되었습니다."),
     SUCCESS_LOGIN(successCode(), HttpStatus.OK, "로그인이 성공적으로 완료되었습니다."),
     SEARCH_MYPAGE(successCode(), HttpStatus.OK, "회원 정보 조회가 성공적으로 조회되었습니다.."),
@@ -16,6 +16,7 @@ public enum ResponseCode {
     SUCCESS_DELETE_USER(successCode(), HttpStatus.OK, "회원 탈퇴가 성공적으로 완료되었습니다."),
     SUCCESS_LOGOUT(successCode(), HttpStatus.OK, "로그아웃이 성공적으로 완료되었습니다."),
 
+    // REVIEW_SUCCESS
     CREATE_REVIEW(successCode(), HttpStatus.OK, "리뷰 작성이 완료되었습니다."),
     GET_REVIEW(successCode(), HttpStatus.OK, "리뷰 상세보기가 성공적으로 조회되었습니다."),
     GET_REVIEWS(successCode(), HttpStatus.OK, "리뷰 전체보기가 성공적으로 조회되었습니다."),
@@ -27,18 +28,18 @@ public enum ResponseCode {
     EXPIRED_JWT(401, HttpStatus.UNAUTHORIZED, "만료된 JWT 입니다."),
     UNSUPPORTED_JWT(401, HttpStatus.UNAUTHORIZED, "지원하지 않는 JWT 입니다."),
     ILLEGAL_JWT(401, HttpStatus.UNAUTHORIZED, "JWT 토큰이 잘못 됐습니다."),
+    NOT_AUTHORITY(401, HttpStatus.UNAUTHORIZED, "해당 권한이 존재하지 않습니다."),
 
-    // 404 NOT_FOUND 찾을 수 없는 리소스
+
+    // 404 NOT_FOUND (찾을 수 없는 리소스)
     NOT_FOUND_USER(404, HttpStatus.NOT_FOUND, "존재하지 않는 회원 정보입니다."),
     NOT_FOUND_PASSWORD(404, HttpStatus.NOT_FOUND, "비밀번호가 존재하지 않습니다."),
-    NOT_AUTHORITY(401, HttpStatus.UNAUTHORIZED, "해당 권한이 존재하지 않습니다."),
 
     NOT_FOUND_REVIEW(404, HttpStatus.NOT_FOUND, "해당 리뷰가 존재하지 않습니다."),
 
-    // 409 CONFLICT 중복된 리소스
+    // 409 (CONFLICT 중복된 리소스)
     USER_ALREADY_EXIST(409, HttpStatus.CONFLICT, "이미 존재하는 회원 정보입니다."),
     NICKNAME_ALREADY_EXIST(409, HttpStatus.CONFLICT, "이미 존재하는 닉네임입니다.");
-
 
     private int code;
     private HttpStatus httpStatus;

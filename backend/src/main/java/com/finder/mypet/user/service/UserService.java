@@ -2,8 +2,6 @@ package com.finder.mypet.user.service;
 
 import com.finder.mypet.common.advice.exception.CustomException;
 import com.finder.mypet.common.response.ResponseCode;
-import com.finder.mypet.exception.AppException;
-import com.finder.mypet.exception.ErrorCode;
 import com.finder.mypet.jwt.dto.response.JwtResponse;
 import com.finder.mypet.user.domain.entity.User;
 import com.finder.mypet.user.domain.repository.UserRepository;

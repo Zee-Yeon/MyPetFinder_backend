@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,21 +25,12 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class JwtProvider {
-
-//    @Value("${jwt.token.secret}")
-//    private String secretKey;
     private final Key key;
 
     public JwtProvider(Environment env) {
         byte[] keyBytes = Decoders.BASE64.decode(env.getProperty("jwt.token.secret"));
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
-
-
-//    public JwtProvider() {
-//        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-//        this.key = Keys.hmacShaKeyFor(keyBytes);
-//    }
 
     public JwtResponse createToken(Authentication authentication) {
 
@@ -79,26 +71,25 @@ public class JwtProvider {
         return new UsernamePasswordAuthenticationToken(principal, "", Collections.EMPTY_LIST);
     }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.info("잘못된 JWT 서명입니다.");
-        } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.info("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
-        }
-        return false;
-    }
-
 //    public boolean validateToken(String token) {
 //        try {
 //            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 //            return true;
+//        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+//            log.info("잘못된 JWT 서명입니다.");
+//        } catch (ExpiredJwtException e) {
+//            log.info("만료된 JWT 토큰입니다.");
+//        } catch (UnsupportedJwtException e) {
+//            log.info("지원되지 않는 JWT 토큰입니다.");
+//        } catch (IllegalArgumentException e) {
+//            log.info("JWT 토큰이 잘못되었습니다.");
+//        }
+//        return false;
+//    }
+
+//    public boolean validateToken(String token)  {
+//        try {
+//            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 //        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
 //            throw new CustomException(ResponseCode.NOT_INVALID_JWT);
 //        } catch (ExpiredJwtException e) {
@@ -108,7 +99,18 @@ public class JwtProvider {
 //        } catch (IllegalArgumentException e) {
 //            throw new CustomException(ResponseCode.ILLEGAL_JWT);
 //        }
+//        return true;
 //    }
+
+    public HttpStatus validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            log.info("잘못된 JWT 서명입니다.");
+            return HttpStatus.UNAUTHORIZED;
+        }
+        return HttpStatus.OK;
+    }
 
     private Claims parseClaims(String accessToken) {
         try {
@@ -117,37 +119,4 @@ public class JwtProvider {
             return e.getClaims();
         }
     }
-
-
-/*
-    // token 에서 userId 꺼내기
-    public static String getUserId(String token, String secretKey) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build().parseClaimsJwt(token)
-                .getBody().get("userId", String.class);
-    }
-
-    public static boolean isExpired(String token, String secretKey) {
-        // 현재 시간 전에 만료가 됐으면 = true
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build().parseClaimsJwt(token)
-                .getBody().getExpiration()
-                .before(new Date());
-    }
-
-    public static String createToken(String userId, String key, Long expireTimeMs) {
-        Claims claims = Jwts.claims();  // map
-        claims.put("userId", userId);
-
-        return Jwts.builder()
-                .setClaims(claims)  // 정보를 넣고싶으면 claims 에 넣기
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))
-                .signWith(SignatureAlgorithm.HS256, key)    // key를 이용하여 암호화
-                .compact();
-    }
-
- */
 }

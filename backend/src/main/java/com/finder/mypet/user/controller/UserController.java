@@ -1,5 +1,6 @@
 package com.finder.mypet.user.controller;
 
+import com.finder.mypet.common.advice.exception.CustomException;
 import com.finder.mypet.common.response.Response;
 import com.finder.mypet.common.response.ResponseCode;
 import com.finder.mypet.jwt.dto.response.JwtResponse;

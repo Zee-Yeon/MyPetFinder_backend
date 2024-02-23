@@ -1,5 +1,6 @@
 package com.finder.mypet.security.filter;
 
+import com.finder.mypet.common.advice.exception.CustomException;
 import com.finder.mypet.jwt.util.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,12 +8,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.filters.ExpiresFilter;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -27,13 +31,30 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         log.info("token:{}", token);
 
         // 2. validateToken 으로 토큰 유효성 검사
-        if (token != null && jwtProvider.validateToken(token)) {
-            // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext 에 저장
-            Authentication authentication = jwtProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            log.info("authentication:{}", authentication);
+//        if (token != null && jwtProvider.validateToken(token)) {
+//            // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext 에 저장
+//            Authentication authentication = jwtProvider.getAuthentication(token);
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//            log.info("authentication:{}", authentication);
+//        }
+
+        if (token != null) {
+            HttpStatus status = jwtProvider.validateToken(token);
+            if (status == HttpStatus.OK) {
+                Authentication authentication = jwtProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                log.info("authentication:{}", authentication);
+            } else {
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                PrintWriter out = response.getWriter();
+                out.println("NOT_INVALID_JWT");
+                return;
+            }
         }
+
         filterChain.doFilter(request, response);
     }
 
