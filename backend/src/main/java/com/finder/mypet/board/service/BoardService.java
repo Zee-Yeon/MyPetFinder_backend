@@ -8,6 +8,8 @@ import com.finder.mypet.board.dto.response.BoardAllInfoResponse;
 import com.finder.mypet.board.dto.response.BoardInfoResponse;
 import com.finder.mypet.comment.domain.repository.CommentRepository;
 import com.finder.mypet.comment.dto.response.CommentResponse;
+import com.finder.mypet.common.advice.exception.CustomException;
+import com.finder.mypet.common.response.ResponseCode;
 import com.finder.mypet.user.domain.entity.User;
 import com.finder.mypet.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,18 +45,18 @@ public class BoardService {
                 .writer(user)
                 .build();
 
+        if (!(dto.getCategory().equals(Category.QA) || dto.getCategory().equals(Category.COMMUNITY))) {
+            throw new CustomException(ResponseCode.BAD_REQUEST);
+        }
         boardRepository.save(board);
     }
 
     // 작성자가 조회할 때, 조회수는 올라가지 않음.
     @Transactional
-    public BoardInfoResponse getBoard(String userId, Long id) {
-        Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 게시물입니다."));
+    public BoardInfoResponse getBoard(String userId, Long boardId) {
+        Board board = findByBoardId(boardId);
         board.view(userId);
-
         BoardInfoResponse info = BoardInfoResponse.dto(board);
-
         return info;
     }
 
@@ -101,30 +103,42 @@ public class BoardService {
 
     @Transactional
     public void edit(String userId, Long boardId, BoardRequest dto) {
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
+        User user = findByUserId(userId);
+        Board board = findByBoardId(boardId);
 
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new FindException("존재하지 않는 게시물입니다."));
-
-        if (user.equals(board.getWriter())) {
-            board.setCategory(dto.getCategory());
-            board.setTitle(dto.getTitle());
-            board.setContent(dto.getContent());
-
-            boardRepository.save(board);
+        if (!user.getNickname().equals(board.getWriter().getNickname())) {
+            throw new CustomException(ResponseCode.NOT_AUTHORITY);
         }
+        if (!(dto.getCategory().equals(Category.QA) || dto.getCategory().equals(Category.COMMUNITY))) {
+            throw new CustomException(ResponseCode.BAD_REQUEST);
+        }
+        board.setCategory(dto.getCategory());
+        board.setTitle(dto.getTitle());
+        board.setContent(dto.getContent());
+
+        boardRepository.save(board);
     }
 
     @Transactional
     public void delete(String userId, Long boardId) {
-        userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
+        User user = findByUserId(userId);
+        Board board = findByBoardId(boardId);
 
-        boardRepository.findById(boardId)
-                        .orElseThrow(() -> new FindException("존재하지 않는 게시물입니다."));
-
+        if (!user.getNickname().equals(board.getWriter().getNickname())) {
+            throw new CustomException(ResponseCode.NOT_AUTHORITY);
+        }
         boardRepository.deleteById(boardId);
     }
 
+    public User findByUserId(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
+        return user;
+    }
+
+    public Board findByBoardId(Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_BOARD));
+        return board;
+    }
 }

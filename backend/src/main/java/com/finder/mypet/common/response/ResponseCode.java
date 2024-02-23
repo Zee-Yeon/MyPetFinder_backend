@@ -23,6 +23,15 @@ public enum ResponseCode {
     EDIT_REVIEW(successCode(), HttpStatus.OK, "리뷰 수정이 성공적으로 완료되었습니다."),
     DELETE_REVIEW(successCode(), HttpStatus.OK, "리뷰가 성공적으로 삭제되었습니다."),
 
+    CREATE_BOARD(successCode(), HttpStatus.OK, "게시물 작성이 완료되었습니다."),
+    GET_BOARD(successCode(), HttpStatus.OK, "게시물 상세보기가 성공적으로 조회되었습니다."),
+    GET_BOARDS(successCode(), HttpStatus.OK, "게시물 전체보기가 성공적으로 조회되었습니다."),
+    EDIT_BOARDS(successCode(), HttpStatus.OK, "게시물 수정이 성공적으로 완료되었습니다."),
+    DELETE_BOARD(successCode(), HttpStatus.OK, "게시물이 성공적으로 삭제되었습니다."),
+
+    // 400
+    BAD_REQUEST(400, HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
+
     // 401 인증 x
     NOT_INVALID_JWT(401, HttpStatus.UNAUTHORIZED, "올바르지 않은 JWT 입니다."),
     EXPIRED_JWT(401, HttpStatus.UNAUTHORIZED, "만료된 JWT 입니다."),
@@ -36,6 +45,9 @@ public enum ResponseCode {
     NOT_FOUND_PASSWORD(404, HttpStatus.NOT_FOUND, "비밀번호가 존재하지 않습니다."),
 
     NOT_FOUND_REVIEW(404, HttpStatus.NOT_FOUND, "해당 리뷰가 존재하지 않습니다."),
+
+    NOT_FOUND_BOARD(404, HttpStatus.NOT_FOUND, "해당 게시물이 존재하지 않습니다."),
+
 
     // 409 (CONFLICT 중복된 리소스)
     USER_ALREADY_EXIST(409, HttpStatus.CONFLICT, "이미 존재하는 회원 정보입니다."),
