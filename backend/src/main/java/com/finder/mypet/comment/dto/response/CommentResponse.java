@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentResponse {
+    private Long commentId;
     private String content;
     private String writer;
     private String registered;
@@ -21,6 +22,7 @@ public class CommentResponse {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         return CommentResponse.builder()
+                .commentId(comment.getId())
                 .content(comment.getContent())
                 .writer(comment.getWriter().getNickname())
                 .registered(comment.getRegistered().format(format))

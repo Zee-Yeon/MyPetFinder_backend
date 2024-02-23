@@ -50,7 +50,7 @@ public class UserController {
     public ResponseEntity<?> getInfo(@AuthenticationPrincipal User user) {
         String userId = user.getUsername();
         UserInfoResponse info = userService.getInfo(userId);
-        return new ResponseEntity<>(Response.create(SUCCESS_MYPAGE, info), SUCCESS_MYPAGE.getHttpStatus());
+        return new ResponseEntity<>(Response.create(SEARCH_MYPAGE, info), SEARCH_MYPAGE.getHttpStatus());
     }
 
 

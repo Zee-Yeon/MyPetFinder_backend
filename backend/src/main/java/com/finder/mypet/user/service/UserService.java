@@ -32,7 +32,7 @@ public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtProvider jwtProvider;
 
-    @Transactional  // deleteBy 를 사용하여 직접 조건을 거는 경우에는 직접 붙여줘야 함.
+    @Transactional
     public void join(String userId, String password, String nickname) {
         findByUserId(userId);
         findByNickname(nickname);
@@ -66,7 +66,7 @@ public class UserService {
         return new UserInfoResponse(user.getUserId(), user.getNickname());
     }
 
-    @Transactional  // deleteBy 를 사용하여 직접 조건을 거는 경우에는 직접 붙여줘야 함.
+    @Transactional
     public void updateInfo(String userId, String password, String nickname) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
@@ -81,7 +81,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    @Transactional  // deleteBy 를 사용하여 직접 조건을 거는 경우에는 직접 붙여줘야 함.
+    @Transactional
     public void deleteByUserId(String userId) {
         Optional<User> user = userRepository.findByUserId(userId);
         if (user.isPresent()) {
@@ -98,14 +98,14 @@ public class UserService {
     }
 
     public void findByUserId(String userId) {
-        userRepository.findByUserId(userId)     // userId(email) 중복 check
+        userRepository.findByUserId(userId)
                 .ifPresent(user -> {
                     throw new CustomException(ResponseCode.USER_ALREADY_EXIST);
                 });
     }
 
     public void findByNickname(String nickname) {
-        userRepository.findByNickname(nickname) // nickname 중복 check
+        userRepository.findByNickname(nickname)
                 .ifPresent(user -> {
                     throw new CustomException(ResponseCode.NICKNAME_ALREADY_EXIST);
                 });

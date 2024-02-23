@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/user/mypage").authenticated()
                         .requestMatchers("/user/board").authenticated()
+                        .requestMatchers("/user/review").authenticated()
                         .anyRequest().permitAll());
 
         http

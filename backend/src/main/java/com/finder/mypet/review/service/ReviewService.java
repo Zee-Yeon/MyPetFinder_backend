@@ -1,5 +1,7 @@
 package com.finder.mypet.review.service;
 
+import com.finder.mypet.common.advice.exception.CustomException;
+import com.finder.mypet.common.response.ResponseCode;
 import com.finder.mypet.review.domain.entity.Review;
 import com.finder.mypet.review.domain.repository.ReviewRepository;
 import com.finder.mypet.review.dto.request.ReviewRequest;
@@ -7,7 +9,6 @@ import com.finder.mypet.review.dto.response.ReviewAllInfoResponse;
 import com.finder.mypet.review.dto.response.ReviewInfoResponse;
 import com.finder.mypet.user.domain.entity.User;
 import com.finder.mypet.user.domain.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,9 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.module.FindException;
-import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +31,7 @@ public class ReviewService {
 
     @Transactional
     public void save(String userId, ReviewRequest dto) {
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
+        User user = findByUserId(userId);
 
         Review review = Review.builder()
                 .writer(user)
@@ -43,23 +43,14 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
+    @Transactional(readOnly = true)
     public ReviewInfoResponse getReview(Long reviewId) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 리뷰입니다."));
-
-        DateTimeFormatter format =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-        ReviewInfoResponse info = ReviewInfoResponse.builder()
-                .writer(review.getWriter().getNickname())
-                .content(review.getContent())
-                .rating(review.getRating())
-                .registered(review.getRegistered().format(format))
-                .shelter(review.getShelter())
-                .build();
-
+        Review review = findByReviewId(reviewId);
+        ReviewInfoResponse info = ReviewInfoResponse.dto(review);
         return info;
     }
 
+    @Transactional(readOnly = true)
     public Page<ReviewAllInfoResponse> readAll(Integer pageNo, Long shelterId) {
 
         Pageable pageable = PageRequest.of(pageNo - 1, 20, Sort.Direction.DESC, "rating");
@@ -70,29 +61,38 @@ public class ReviewService {
 
     @Transactional
     public void edit(String userId, Long reviewId, ReviewRequest dto) {
-        userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
+        User user = findByUserId(userId);
+        Review review = findByReviewId(reviewId);
 
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new FindException("존재하지 않는 리뷰입니다."));
-
-        review.setContent(dto.getContent());
-        review.setShelter(dto.getShelter());
-        review.setRating(dto.getRating());
-
-        reviewRepository.save(review);
+        if (user.getNickname().equals(review.getWriter().getNickname())) {
+            review.setContent(dto.getContent());
+            review.setShelter(dto.getShelter());
+            review.setRating(dto.getRating());
+        } else {
+            throw new CustomException(ResponseCode.NOT_AUTHORITY);
+        }
     }
 
     @Transactional
     public void delete(String userId, Long reviewId) {
-        userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
+        User user = findByUserId(userId);
+        Review review = findByReviewId(reviewId);
 
-        reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new FindException("존재하지 않는 게시물입니다."));
-
+        if (!user.getNickname().equals(review.getWriter().getNickname())) {
+            throw new CustomException(ResponseCode.NOT_AUTHORITY);
+        }
         reviewRepository.deleteById(reviewId);
     }
 
+    public User findByUserId(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
+        return user;
+    }
 
+    public Review findByReviewId(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_REVIEW));
+        return review;
+    }
 }

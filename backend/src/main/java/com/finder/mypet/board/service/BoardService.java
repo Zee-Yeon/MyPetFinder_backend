@@ -69,15 +69,17 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public Page<BoardAllInfoResponse> readCategory(Category category, Integer pageNo, String order, String keyword) {
+        String orderBy = "registered";
 
-        order = (order == null) ? "registered" : "view";
+        if (order.equals("view")) {
+            orderBy = "view";
+        }
 
-        Pageable pageable = PageRequest.of(pageNo-1, 10, Sort.Direction.DESC, order);
+        Pageable pageable = PageRequest.of(pageNo-1, 10, Sort.Direction.DESC, orderBy);
 
         Page<BoardAllInfoResponse> board;
 
-        if (keyword.isEmpty()
-        ) {
+        if (keyword.isEmpty()) {
             board = (category == null)
                     ? boardRepository.findAll(pageable).map(BoardAllInfoResponse::dto)
                     : boardRepository.findAllByCategory(category, pageable).map(BoardAllInfoResponse::dto);
