@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import static com.finder.mypet.common.response.ResponseCode.*;
 
@@ -30,8 +31,8 @@ public class BoardController {
 
     // 게시글 작성 [ㅇ]
     @PostMapping("/user/board")
-    public ResponseEntity<?> save(@AuthenticationPrincipal User user, @RequestBody BoardRequest boardRequest) {
-        boardService.save(user, boardRequest);
+    public ResponseEntity<?> save(@AuthenticationPrincipal User user, @RequestParam(value = "file") MultipartFile file, @RequestPart(value = "boardRequest") BoardRequest boardRequest) {
+        boardService.save(user, file, boardRequest);
         return new ResponseEntity<>(Response.create(CREATE_BOARD, null), CREATE_BOARD.getHttpStatus());
     }
 
@@ -74,6 +75,15 @@ public class BoardController {
 //
 //        return new ResponseEntity<>(boardList, HttpStatus.OK);
 //    }
+
+
+
+
+
+
+
+
+
 
 //    // 작성자 검색하기 []
 //    @GetMapping("/boards/writer")

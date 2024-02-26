@@ -45,6 +45,8 @@ public enum ResponseCode {
     ILLEGAL_JWT(401, HttpStatus.UNAUTHORIZED, "JWT 토큰이 잘못 됐습니다."),
     NOT_AUTHORITY(401, HttpStatus.UNAUTHORIZED, "해당 권한이 존재하지 않습니다."),
 
+    FILE_CAN_NOT_SAVE(403, HttpStatus.FORBIDDEN, "파일 저장이 실패하였습니다."),
+    FILE_CAN_NOT_DELETE(403, HttpStatus.FORBIDDEN, "파일 삭제가 실패하였습니다."),
 
     // 404 NOT_FOUND (찾을 수 없는 리소스)
     NOT_FOUND_USER(404, HttpStatus.NOT_FOUND, "존재하지 않는 회원 정보입니다."),

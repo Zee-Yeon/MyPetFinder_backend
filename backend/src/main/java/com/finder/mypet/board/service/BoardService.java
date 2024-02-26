@@ -7,34 +7,42 @@ import com.finder.mypet.board.dto.request.BoardRequest;
 import com.finder.mypet.board.dto.response.BoardAllInfoResponse;
 import com.finder.mypet.board.dto.response.BoardInfoResponse;
 import com.finder.mypet.common.advice.exception.CustomException;
+import com.finder.mypet.common.file.service.FileService;
 import com.finder.mypet.common.response.ResponseCode;
 import com.finder.mypet.user.domain.entity.User;
 import com.finder.mypet.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardService {
 
     private final BoardRepository boardRepository;
     private final UserService userService;
+    private final FileService fileService;
 
     @Transactional
-    public void save(org.springframework.security.core.userdetails.User userDetail, BoardRequest boardRequest) {
+    public void save(org.springframework.security.core.userdetails.User userDetail, MultipartFile file, BoardRequest boardRequest) {
         User user = userService.userDetail(userDetail);
         checkCategory(boardRequest);
+
+        String filePath = fileService.save(file);
 
         Board board = Board.builder()
                 .category(boardRequest.getCategory())
                 .title(boardRequest.getTitle())
                 .content(boardRequest.getContent())
                 .writer(user)
+                .filePath(filePath)
                 .build();
 
         boardRepository.save(board);

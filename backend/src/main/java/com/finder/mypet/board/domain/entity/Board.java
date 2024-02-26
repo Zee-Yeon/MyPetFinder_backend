@@ -15,8 +15,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Setter
+@Getter
 @Entity
 public class Board {
     @Id
@@ -32,6 +32,9 @@ public class Board {
 
     // 조회수
     private int view;
+
+    @Column(nullable = true)
+    private String filePath;
 
     @Enumerated(EnumType.STRING)
     private Category category;

@@ -29,6 +29,7 @@ public class BoardInfoResponse {
     private String registered;
     private int view;
     private String writer;
+    private String filePath;
     private List<CommentResponse> commentList;
 
     public static BoardInfoResponse dto(Board board) {
@@ -42,6 +43,7 @@ public class BoardInfoResponse {
                 .view(board.getView())
                 .registered(board.getRegistered().format(format))
                 .writer(board.getWriter().getNickname())
+                .filePath(board.getFilePath())
                 .commentList(board.getCommentList().stream().map(CommentResponse::dto).collect(Collectors.toList()))
                 .build();
     }
