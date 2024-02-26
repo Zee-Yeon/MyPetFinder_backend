@@ -2,6 +2,7 @@ package com.finder.mypet.comment.service;
 
 import com.finder.mypet.board.domain.entity.Board;
 import com.finder.mypet.board.domain.repository.BoardRepository;
+import com.finder.mypet.board.service.BoardService;
 import com.finder.mypet.comment.domain.entity.Comment;
 import com.finder.mypet.comment.domain.repository.CommentRepository;
 import com.finder.mypet.comment.dto.request.CommentRequest;
@@ -10,6 +11,7 @@ import com.finder.mypet.common.response.ResponseCode;
 import com.finder.mypet.review.domain.entity.Review;
 import com.finder.mypet.user.domain.entity.User;
 import com.finder.mypet.user.domain.repository.UserRepository;
+import com.finder.mypet.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -22,64 +24,53 @@ import java.util.Optional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
-    private final BoardRepository boardRepository;
+    private final UserService userService;
+    private final BoardService boardService;
 
     @Transactional
-    public void save(String userId, Long boardId, CommentRequest dto) {
-        User user = findByUserId(userId);
-        Board board = findByBoardId(boardId);
+    public void save(org.springframework.security.core.userdetails.User userDetail, Long boardId, CommentRequest commentRequest) {
+        String userId = userService.userDetail(userDetail);
+        User user = userService.findByUserId(userId);
+        Board board = boardService.findByBoardId(boardId);
 
         Comment comment = Comment.builder()
                 .writer(user)
                 .board(board)
-                .content(dto.getContent())
+                .content(commentRequest.getContent())
                 .build();
 
         commentRepository.save(comment);
     }
 
     @Transactional
-    public void updateComment(String userId, Long commentId, CommentRequest dto) {
-        User user = findByUserId(userId);
+    public void updateComment(org.springframework.security.core.userdetails.User userDetail, Long commentId, CommentRequest commentRequest) {
+        String userId = userService.userDetail(userDetail);
+        User user = userService.findByUserId(userId);
         Comment comment = findByCommentId(commentId);
 
-        if (!user.getNickname().equals(comment.getWriter().getNickname())) {
-            throw new CustomException(ResponseCode.NOT_AUTHORITY);
-        }
-        if (dto.getContent() != null) comment.setContent(dto.getContent());
-
-        commentRepository.save(comment);
+        checkWriter(user, comment);
+        comment.updateContent(commentRequest.getContent());
     }
 
     @Transactional
-    public void deleteComment(String userId, Long commentId) {
-        User user = findByUserId(userId);
+    public void deleteComment(org.springframework.security.core.userdetails.User userDetail, Long commentId) {
+        String userId = userService.userDetail(userDetail);
+        User user = userService.findByUserId(userId);
         Comment comment = findByCommentId(commentId);
 
-        if (!user.getNickname().equals(comment.getWriter().getNickname())) {
-            throw new CustomException(ResponseCode.NOT_AUTHORITY);
-        }
-
+        checkWriter(user, comment);
         commentRepository.deleteById(commentId);
     }
 
-    public User findByUserId(String userId) {
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
-        return user;
-    }
-
     public Comment findByCommentId(Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
+        return commentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_COMMENT));
-        return comment;
     }
 
-    public Board findByBoardId(Long boardId) {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_BOARD));
-        return board;
+    private void checkWriter(User user, Comment comment) {
+        if (!user.getNickname().equals(comment.getWriter().getNickname())) {
+            throw new CustomException(ResponseCode.NOT_AUTHORITY);
+        }
     }
 }
 
