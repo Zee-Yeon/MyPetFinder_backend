@@ -69,9 +69,8 @@ public class UserService {
         User user = userDetail(userDetail);
 
         nicknameExists(dto.getNickname());
+        user.setPassword(encoder.encode(dto.getPassword()));
         user.modifyNickname(dto.getNickname());
-
-        userRepository.save(user);
     }
 
     @Transactional
