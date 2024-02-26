@@ -29,9 +29,7 @@ public class ReviewController {
     // 리뷰 작성 [ㅇ]
     @PostMapping("/user/review")
     public ResponseEntity<?> save(@AuthenticationPrincipal User user, @RequestBody ReviewRequest dto) {
-        String userId = user.getUsername();
-
-        reviewService.save(userId, dto);
+        reviewService.save(user, dto);
         return new ResponseEntity<>(Response.create(CREATE_REVIEW, null), CREATE_REVIEW.getHttpStatus());
     }
 
@@ -58,18 +56,14 @@ public class ReviewController {
     // 리뷰 수정 [ㅇ]
     @PutMapping("/user/review/{reviewId}")
     public ResponseEntity<?> edit(@AuthenticationPrincipal User user, @PathVariable("reviewId") Long reviewId, @RequestBody ReviewRequest dto) {
-        String userId = user.getUsername();
-
-        reviewService.edit(userId, reviewId, dto);
+        reviewService.edit(user, reviewId, dto);
         return new ResponseEntity<>(Response.create(EDIT_REVIEW, null), EDIT_REVIEW.getHttpStatus());
     }
 
     // 리뷰 삭제 [ㅇ]
     @DeleteMapping("/user/review/{reviewId}")
     public ResponseEntity<?> delete(@AuthenticationPrincipal User user, @PathVariable("reviewId") Long reviewId){
-        String userId = user.getUsername();
-
-        reviewService.delete(userId, reviewId);
+        reviewService.delete(user, reviewId);
         return new ResponseEntity<>(Response.create(DELETE_REVIEW, null), DELETE_REVIEW.getHttpStatus());
     }
 }

@@ -7,6 +7,7 @@ import com.finder.mypet.board.dto.response.BoardInfoResponse;
 import com.finder.mypet.board.service.BoardService;
 import com.finder.mypet.common.response.Response;
 import com.finder.mypet.common.response.ResponseCode;
+import com.finder.mypet.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,21 +30,15 @@ public class BoardController {
 
     // 게시글 작성 [ㅇ]
     @PostMapping("/user/board")
-    public ResponseEntity<?> save(@AuthenticationPrincipal User user, @RequestBody BoardRequest dto) {
-        String userId = user.getUsername();
-
-        boardService.save(userId, dto);
+    public ResponseEntity<?> save(@AuthenticationPrincipal User user, @RequestBody BoardRequest boardRequest) {
+        boardService.save(user, boardRequest);
         return new ResponseEntity<>(Response.create(CREATE_BOARD, null), CREATE_BOARD.getHttpStatus());
     }
 
     // 게시글 상세보기 (비회원도 가능) [ㅇ]
     @GetMapping("/user/board/{boardId}")
     public ResponseEntity<?> getBoard(@AuthenticationPrincipal User user, @PathVariable("boardId") Long boardId) {
-        String userId = "";
-        if (user != null) {
-            userId = user.getUsername();
-        }
-        BoardInfoResponse board = boardService.getBoard(userId, boardId);
+        BoardInfoResponse board = boardService.getBoard(user, boardId);
         return new ResponseEntity<>(Response.create(GET_BOARD, board), GET_BOARD.getHttpStatus());
     }
 /*
@@ -91,18 +86,15 @@ public class BoardController {
 
     // 게시글 수정 [ㅇ]
     @PutMapping("/user/board/{boardId}")
-    public ResponseEntity<?> edit(@AuthenticationPrincipal User user, @PathVariable("boardId") Long boardId, @RequestBody BoardRequest dto){
-        String userId = user.getUsername();
-
-        boardService.edit(userId, boardId, dto);
+    public ResponseEntity<?> edit(@AuthenticationPrincipal User user, @PathVariable("boardId") Long boardId, @RequestBody BoardRequest BoardRequest){
+        boardService.edit(user, boardId, BoardRequest);
         return new ResponseEntity<>(Response.create(EDIT_BOARDS, null), EDIT_BOARDS.getHttpStatus());
     }
 
     // 게시글 삭제 [ㅇ]
     @DeleteMapping("/user/board/{boardId}")
     public ResponseEntity<?> delete(@AuthenticationPrincipal User user, @PathVariable("boardId") Long boardId){
-        String userId = user.getUsername();
-        boardService.delete(userId, boardId);
+        boardService.delete(user, boardId);
         return new ResponseEntity<>(Response.create(DELETE_BOARD, null), DELETE_BOARD.getHttpStatus());
     }
 }

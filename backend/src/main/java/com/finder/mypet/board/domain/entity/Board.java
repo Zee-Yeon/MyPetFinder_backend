@@ -1,6 +1,7 @@
 package com.finder.mypet.board.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.finder.mypet.board.dto.request.BoardRequest;
 import com.finder.mypet.comment.domain.entity.Comment;
 import com.finder.mypet.user.domain.entity.User;
 import jakarta.persistence.*;
@@ -51,5 +52,11 @@ public class Board {
         if (!userId.equals(writer.getUserId())) {
             view++;
         }
+    }
+
+    public void update(BoardRequest boardRequest) {
+        this.category = boardRequest.getCategory();
+        this.title = boardRequest.getTitle();
+        this.content = boardRequest.getContent();
     }
 }

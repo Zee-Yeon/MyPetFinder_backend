@@ -28,8 +28,8 @@ public class UserController {
 
     // 회원 가입 [ㅇ]
     @PostMapping("/user/join")
-    public ResponseEntity<?> join(@RequestBody UserRequest dto) {
-        userService.join(dto);
+    public ResponseEntity<?> join(@RequestBody UserRequest userRequest) {
+        userService.join(userRequest);
         return new ResponseEntity<>(Response.create(SUCCESS_SIGNUP, null), SUCCESS_SIGNUP.getHttpStatus());
     }
 
@@ -55,8 +55,8 @@ public class UserController {
 
     // 회원 정보 수정 [ㅇ]
     @PutMapping("/user/mypage")
-    public ResponseEntity<?> updateInfo(@AuthenticationPrincipal User user, @RequestBody UserRequest dto) {
-        userService.updateInfo(user, dto);
+    public ResponseEntity<?> updateInfo(@AuthenticationPrincipal User user, @RequestBody UserRequest userRequest) {
+        userService.updateInfo(user, userRequest);
         return new ResponseEntity<>(Response.create(SUCCESS_EDIT, null), SUCCESS_EDIT.getHttpStatus());
     }
 

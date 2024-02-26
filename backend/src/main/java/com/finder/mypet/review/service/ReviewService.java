@@ -9,6 +9,7 @@ import com.finder.mypet.review.dto.response.ReviewAllInfoResponse;
 import com.finder.mypet.review.dto.response.ReviewInfoResponse;
 import com.finder.mypet.user.domain.entity.User;
 import com.finder.mypet.user.domain.repository.UserRepository;
+import com.finder.mypet.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,11 +28,12 @@ import java.lang.module.FindException;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Transactional
-    public void save(String userId, ReviewRequest dto) {
-        User user = findByUserId(userId);
+    public void save(org.springframework.security.core.userdetails.User userDetail, ReviewRequest dto) {
+        String userId = userService.userDetail(userDetail);
+        User user = userService.findByUserId(userId);
 
         Review review = Review.builder()
                 .writer(user)
@@ -46,8 +48,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public ReviewInfoResponse getReview(Long reviewId) {
         Review review = findByReviewId(reviewId);
-        ReviewInfoResponse info = ReviewInfoResponse.dto(review);
-        return info;
+        return ReviewInfoResponse.dto(review);
     }
 
     @Transactional(readOnly = true)
@@ -60,22 +61,20 @@ public class ReviewService {
     }
 
     @Transactional
-    public void edit(String userId, Long reviewId, ReviewRequest dto) {
-        User user = findByUserId(userId);
+    public void edit(org.springframework.security.core.userdetails.User userDetail, Long reviewId, ReviewRequest dto) {
+        String userId = userService.userDetail(userDetail);
+        userService.findByUserId(userId);
+
         Review review = findByReviewId(reviewId);
 
-        if (user.getNickname().equals(review.getWriter().getNickname())) {
-            review.setContent(dto.getContent());
-            review.setShelter(dto.getShelter());
-            review.setRating(dto.getRating());
-        } else {
-            throw new CustomException(ResponseCode.NOT_AUTHORITY);
-        }
+        review.setContent(dto.getContent());
+        review.setRating(dto.getRating());
     }
 
     @Transactional
-    public void delete(String userId, Long reviewId) {
-        User user = findByUserId(userId);
+    public void delete(org.springframework.security.core.userdetails.User userDetail, Long reviewId) {
+        String userId = userService.userDetail(userDetail);
+        User user = userService.findByUserId(userId);
         Review review = findByReviewId(reviewId);
 
         if (!user.getNickname().equals(review.getWriter().getNickname())) {
@@ -84,15 +83,8 @@ public class ReviewService {
         reviewRepository.deleteById(reviewId);
     }
 
-    public User findByUserId(String userId) {
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
-        return user;
-    }
-
     public Review findByReviewId(Long reviewId) {
-        Review review = reviewRepository.findById(reviewId)
+        return reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_REVIEW));
-        return review;
     }
 }

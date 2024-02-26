@@ -6,37 +6,30 @@ import com.finder.mypet.board.domain.repository.BoardRepository;
 import com.finder.mypet.board.dto.request.BoardRequest;
 import com.finder.mypet.board.dto.response.BoardAllInfoResponse;
 import com.finder.mypet.board.dto.response.BoardInfoResponse;
-import com.finder.mypet.comment.domain.repository.CommentRepository;
-import com.finder.mypet.comment.dto.response.CommentResponse;
 import com.finder.mypet.common.advice.exception.CustomException;
 import com.finder.mypet.common.response.ResponseCode;
 import com.finder.mypet.user.domain.entity.User;
-import com.finder.mypet.user.domain.repository.UserRepository;
+import com.finder.mypet.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.lang.module.FindException;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Transactional
-    public void save(String userId, BoardRequest dto) {
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
+    public void save(org.springframework.security.core.userdetails.User userDetail, BoardRequest dto) {
+        String userId = userService.userDetail(userDetail);
+        User user = userService.findByUserId(userId);
+        checkCategory(dto);
 
         Board board = Board.builder()
                 .category(dto.getCategory())
@@ -45,28 +38,26 @@ public class BoardService {
                 .writer(user)
                 .build();
 
-        if (!(dto.getCategory().equals(Category.QA) || dto.getCategory().equals(Category.COMMUNITY))) {
-            throw new CustomException(ResponseCode.BAD_REQUEST);
-        }
         boardRepository.save(board);
     }
 
     // 작성자가 조회할 때, 조회수는 올라가지 않음.
     @Transactional
-    public BoardInfoResponse getBoard(String userId, Long boardId) {
+    public BoardInfoResponse getBoard(org.springframework.security.core.userdetails.User userDetail, Long boardId) {
+        String userId = "";
+        if (userDetail != null) {
+            userId = userDetail.getUsername();
+        }
         Board board = findByBoardId(boardId);
         board.view(userId);
-        BoardInfoResponse info = BoardInfoResponse.dto(board);
-        return info;
+        return BoardInfoResponse.dto(board);
     }
 
     @Transactional(readOnly = true)
     public Page<BoardAllInfoResponse> readAll(Integer pageNo) {
 
         Pageable pageable = PageRequest.of(pageNo-1, 10, Sort.Direction.DESC, "registered");
-        Page<BoardAllInfoResponse> board = boardRepository.findAll(pageable).map(BoardAllInfoResponse::dto);
-
-        return board;
+        return boardRepository.findAll(pageable).map(BoardAllInfoResponse::dto);
     }
 
     @Transactional(readOnly = true)
@@ -110,43 +101,42 @@ public class BoardService {
 //    }
 
     @Transactional
-    public void edit(String userId, Long boardId, BoardRequest dto) {
-        User user = findByUserId(userId);
+    public void edit(org.springframework.security.core.userdetails.User userDetail, Long boardId, BoardRequest boardRequest) {
+        String userId = userService.userDetail(userDetail);
+        User user = userService.findByUserId(userId);
         Board board = findByBoardId(boardId);
 
-        if (!user.getNickname().equals(board.getWriter().getNickname())) {
-            throw new CustomException(ResponseCode.NOT_AUTHORITY);
-        }
-        if (!(dto.getCategory().equals(Category.QA) || dto.getCategory().equals(Category.COMMUNITY))) {
-            throw new CustomException(ResponseCode.BAD_REQUEST);
-        }
-        board.setCategory(dto.getCategory());
-        board.setTitle(dto.getTitle());
-        board.setContent(dto.getContent());
+        checkWriter(user, board);
+        checkCategory(boardRequest);
 
-        boardRepository.save(board);
+        board.update(boardRequest);
     }
 
     @Transactional
-    public void delete(String userId, Long boardId) {
-        User user = findByUserId(userId);
+    public void delete(org.springframework.security.core.userdetails.User userDetail, Long boardId) {
+        String userId = userService.userDetail(userDetail);
+        User user = userService.findByUserId(userId);
         Board board = findByBoardId(boardId);
 
-        if (!user.getNickname().equals(board.getWriter().getNickname())) {
-            throw new CustomException(ResponseCode.NOT_AUTHORITY);
-        }
+        checkWriter(user, board);
         boardRepository.deleteById(boardId);
     }
 
-    public User findByUserId(String userId) {
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
-        return user;
+    private static void checkWriter(User user, Board board) {
+        if (!user.getNickname().equals(board.getWriter().getNickname())) {
+            throw new CustomException(ResponseCode.NOT_AUTHORITY);
+        }
     }
 
     public Board findByBoardId(Long boardId) {
-        Board board = boardRepository.findById(boardId)
+        return boardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_BOARD));
-        return board;
     }
+
+    private static void checkCategory(BoardRequest dto) {
+        if (!(dto.getCategory().equals(Category.QA) || dto.getCategory().equals(Category.COMMUNITY))) {
+            throw new CustomException(ResponseCode.BAD_REQUEST);
+        }
+    }
+
 }

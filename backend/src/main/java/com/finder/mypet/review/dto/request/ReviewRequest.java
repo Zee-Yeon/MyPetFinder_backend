@@ -8,7 +8,6 @@ import lombok.Getter;
 @Builder
 @Getter
 public class ReviewRequest {
-    @NotNull
     private Long shelter;
 
     @NotNull

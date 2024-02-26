@@ -58,6 +58,7 @@ public class UserService {
         return token;
     }
 
+    @Transactional(readOnly = true)
     public UserInfoResponse getInfo(org.springframework.security.core.userdetails.User userDetail) {
         String userId = userDetail(userDetail);
         User user = findByUserId(userId);

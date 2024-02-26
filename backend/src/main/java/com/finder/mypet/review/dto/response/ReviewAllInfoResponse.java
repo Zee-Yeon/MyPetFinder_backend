@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewAllInfoResponse {
-    private Long id;
+    private Long reviewId;
     private String content;
     private Long shelter;
     private int rating;
@@ -26,7 +26,7 @@ public class ReviewAllInfoResponse {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         return ReviewAllInfoResponse.builder()
-                .id(review.getId())
+                .reviewId(review.getId())
                 .content(review.getContent())
                 .shelter(review.getShelter())
                 .rating(review.getRating())
