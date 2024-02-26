@@ -28,8 +28,8 @@ public class ReviewController {
 
     // 리뷰 작성 [ㅇ]
     @PostMapping("/user/review")
-    public ResponseEntity<?> save(@AuthenticationPrincipal User user, @RequestBody ReviewRequest dto) {
-        reviewService.save(user, dto);
+    public ResponseEntity<?> save(@AuthenticationPrincipal User user, @RequestBody ReviewRequest reviewRequest) {
+        reviewService.save(user, reviewRequest);
         return new ResponseEntity<>(Response.create(CREATE_REVIEW, null), CREATE_REVIEW.getHttpStatus());
     }
 
@@ -38,14 +38,13 @@ public class ReviewController {
     public ResponseEntity<?> getBoard(@PathVariable("reviewId") Long reviewId) {
         ReviewInfoResponse review = reviewService.getReview(reviewId);
 
-        return new ResponseEntity<>(Response.create(GET_REVIEW, null), GET_REVIEW.getHttpStatus());
+        return new ResponseEntity<>(Response.create(GET_REVIEW, review), GET_REVIEW.getHttpStatus());
     }
 
     // 보호소 리뷰 전체 조회(rating 높은 기준으로 정렬) [ㅇ]
     @GetMapping("/reviews/{shelter}")
     public ResponseEntity<?> readAll(@RequestParam(required = false, defaultValue = "1", value = "page") Integer pageNo,
                                      @PathVariable(name = "shelter", required = false) Long shelterId) {
-
         if (pageNo == null) pageNo = 1;
 
         Page<ReviewAllInfoResponse> reviewList =  reviewService.readAll(pageNo, shelterId);

@@ -53,22 +53,18 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public Page<ReviewAllInfoResponse> readAll(Integer pageNo, Long shelterId) {
-
         Pageable pageable = PageRequest.of(pageNo - 1, 20, Sort.Direction.DESC, "rating");
-        Page<ReviewAllInfoResponse> review = reviewRepository.findAllByShelter(shelterId, pageable).map(ReviewAllInfoResponse::dto);
-
-        return review;
+        return reviewRepository.findAllByShelter(shelterId, pageable).map(ReviewAllInfoResponse::dto);
     }
 
     @Transactional
-    public void edit(org.springframework.security.core.userdetails.User userDetail, Long reviewId, ReviewRequest dto) {
+    public void edit(org.springframework.security.core.userdetails.User userDetail, Long reviewId, ReviewRequest reviewRequest) {
         String userId = userService.userDetail(userDetail);
-        userService.findByUserId(userId);
-
+        User user = userService.findByUserId(userId);
         Review review = findByReviewId(reviewId);
 
-        review.setContent(dto.getContent());
-        review.setRating(dto.getRating());
+        checkWriter(user, review);
+        review.updateReview(reviewRequest);
     }
 
     @Transactional
@@ -77,10 +73,14 @@ public class ReviewService {
         User user = userService.findByUserId(userId);
         Review review = findByReviewId(reviewId);
 
+        checkWriter(user, review);
+        reviewRepository.deleteById(reviewId);
+    }
+
+    private void checkWriter(User user, Review review) {
         if (!user.getNickname().equals(review.getWriter().getNickname())) {
             throw new CustomException(ResponseCode.NOT_AUTHORITY);
         }
-        reviewRepository.deleteById(reviewId);
     }
 
     public Review findByReviewId(Long reviewId) {

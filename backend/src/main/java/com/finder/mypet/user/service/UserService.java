@@ -60,15 +60,13 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserInfoResponse getInfo(org.springframework.security.core.userdetails.User userDetail) {
-        String userId = userDetail(userDetail);
-        User user = findByUserId(userId);
+        User user = userDetail(userDetail);
         return new UserInfoResponse(user.getUserId(), user.getNickname());
     }
 
     @Transactional
     public void updateInfo(org.springframework.security.core.userdetails.User userDetail, UserRequest dto) {
-        String userId = userDetail(userDetail);
-        User user = findByUserId(userId);
+        User user = userDetail(userDetail);
 
         nicknameExists(dto.getNickname());
         user.modifyNickname(dto.getNickname());
@@ -78,9 +76,8 @@ public class UserService {
 
     @Transactional
     public void deleteByUserId(org.springframework.security.core.userdetails.User userDetail) {
-        String userId = userDetail(userDetail);
-        findByUserId(userId);
-        userRepository.deleteByUserId(userId);
+        User user = userDetail(userDetail);
+        userRepository.deleteByUserId(user.getUserId());
     }
 
     public void userExists(String userId) {
@@ -97,8 +94,10 @@ public class UserService {
                 });
     }
 
-    public String userDetail(org.springframework.security.core.userdetails.User user) {
-        return user.getUsername();
+    public User userDetail(org.springframework.security.core.userdetails.User user) {
+        String userId = user.getUsername();
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
     }
 
     public User findByUserId(String userId) {
