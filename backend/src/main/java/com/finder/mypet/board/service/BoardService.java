@@ -26,15 +26,14 @@ public class BoardService {
     private final UserService userService;
 
     @Transactional
-    public void save(org.springframework.security.core.userdetails.User userDetail, BoardRequest dto) {
-        String userId = userService.userDetail(userDetail);
-        User user = userService.findByUserId(userId);
-        checkCategory(dto);
+    public void save(org.springframework.security.core.userdetails.User userDetail, BoardRequest boardRequest) {
+        User user = userService.userDetail(userDetail);
+        checkCategory(boardRequest);
 
         Board board = Board.builder()
-                .category(dto.getCategory())
-                .title(dto.getTitle())
-                .content(dto.getContent())
+                .category(boardRequest.getCategory())
+                .title(boardRequest.getTitle())
+                .content(boardRequest.getContent())
                 .writer(user)
                 .build();
 
@@ -102,8 +101,7 @@ public class BoardService {
 
     @Transactional
     public void edit(org.springframework.security.core.userdetails.User userDetail, Long boardId, BoardRequest boardRequest) {
-        String userId = userService.userDetail(userDetail);
-        User user = userService.findByUserId(userId);
+        User user = userService.userDetail(userDetail);
         Board board = findByBoardId(boardId);
 
         checkWriter(user, board);
@@ -114,8 +112,7 @@ public class BoardService {
 
     @Transactional
     public void delete(org.springframework.security.core.userdetails.User userDetail, Long boardId) {
-        String userId = userService.userDetail(userDetail);
-        User user = userService.findByUserId(userId);
+        User user = userService.userDetail(userDetail);
         Board board = findByBoardId(boardId);
 
         checkWriter(user, board);
