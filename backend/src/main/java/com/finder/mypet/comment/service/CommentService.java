@@ -29,8 +29,7 @@ public class CommentService {
 
     @Transactional
     public void save(org.springframework.security.core.userdetails.User userDetail, Long boardId, CommentRequest commentRequest) {
-        String userId = userService.userDetail(userDetail);
-        User user = userService.findByUserId(userId);
+        User user = userService.userDetail(userDetail);
         Board board = boardService.findByBoardId(boardId);
 
         Comment comment = Comment.builder()
@@ -44,8 +43,7 @@ public class CommentService {
 
     @Transactional
     public void updateComment(org.springframework.security.core.userdetails.User userDetail, Long commentId, CommentRequest commentRequest) {
-        String userId = userService.userDetail(userDetail);
-        User user = userService.findByUserId(userId);
+        User user = userService.userDetail(userDetail);
         Comment comment = findByCommentId(commentId);
 
         checkWriter(user, comment);
@@ -54,8 +52,7 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(org.springframework.security.core.userdetails.User userDetail, Long commentId) {
-        String userId = userService.userDetail(userDetail);
-        User user = userService.findByUserId(userId);
+        User user = userService.userDetail(userDetail);
         Comment comment = findByCommentId(commentId);
 
         checkWriter(user, comment);
