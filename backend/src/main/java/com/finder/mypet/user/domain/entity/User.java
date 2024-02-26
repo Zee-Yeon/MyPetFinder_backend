@@ -44,4 +44,8 @@ public class User {
 
     @OneToMany(mappedBy = "writer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviewList = new ArrayList<>();
+
+    public void modifyNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

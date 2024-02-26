@@ -9,9 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
     Page<Board> findAll(Pageable pageable);
     Page<Board> findAllByCategory(Category category, Pageable pageable);
+//    Page<Board> findAllByWriterContaining(@Param("keyword") String keyword, Pageable pageable);
     Page<Board> findAllByTitleContaining(String keyword, Pageable pageable);
 }

@@ -91,12 +91,20 @@ public class BoardService {
 
         return board;
     }
-//
+
 //    @Transactional(readOnly = true)
 //    public Page<BoardAllInfoResponse> searchKeyword(String search, Integer pageNo) {
 //
 //        Pageable pageable = PageRequest.of(pageNo-1, 10, Sort.Direction.DESC, "registered");
 //        Page<BoardAllInfoResponse> board = boardRepository.findAllByTitleContaining(search, pageable).map(BoardAllInfoResponse::dto);
+//
+//        return board;
+//    }
+//    @Transactional(readOnly = true)
+//    public Page<BoardAllInfoResponse> searchKeyword(String writer, Integer pageNo) {
+//
+//        Pageable pageable = PageRequest.of(pageNo-1, 10, Sort.Direction.DESC, "registered");
+//        Page<BoardAllInfoResponse> board = boardRepository.findAllByWriterContaining(writer, pageable).map(BoardAllInfoResponse::dto);
 //
 //        return board;
 //    }

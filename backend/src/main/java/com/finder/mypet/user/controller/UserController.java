@@ -49,26 +49,21 @@ public class UserController {
     // 회원 정보 조회 [ㅇ]
     @GetMapping("/user/mypage")
     public ResponseEntity<?> getInfo(@AuthenticationPrincipal User user) {
-        String userId = user.getUsername();
-        UserInfoResponse info = userService.getInfo(userId);
+        UserInfoResponse info = userService.getInfo(user);
         return new ResponseEntity<>(Response.create(SEARCH_MYPAGE, info), SEARCH_MYPAGE.getHttpStatus());
     }
-
 
     // 회원 정보 수정 [ㅇ]
     @PutMapping("/user/mypage")
     public ResponseEntity<?> updateInfo(@AuthenticationPrincipal User user, @RequestBody UserRequest dto) {
-        String userId = user.getUsername();
-        userService.updateInfo(userId, dto);
+        userService.updateInfo(user, dto);
         return new ResponseEntity<>(Response.create(SUCCESS_EDIT, null), SUCCESS_EDIT.getHttpStatus());
     }
 
     // 회원 탈퇴 [ㅇ]
     @DeleteMapping("/user/mypage")
     public ResponseEntity<?> withdraw(@AuthenticationPrincipal User user) {
-        String userId = user.getUsername();
-
-        userService.deleteByUserId(userId);
+        userService.deleteByUserId(user);
         return new ResponseEntity<>(Response.create(SUCCESS_DELETE_USER, null), SUCCESS_DELETE_USER.getHttpStatus());
     }
 }

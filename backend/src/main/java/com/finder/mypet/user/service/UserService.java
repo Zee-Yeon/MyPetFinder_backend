@@ -33,8 +33,8 @@ public class UserService {
 
     @Transactional
     public void join(UserRequest dto) {
-        findByUserId(dto.getUserId());
-        findByNickname(dto.getNickname());
+        userExists(dto.getUserId());
+        nicknameExists(dto.getNickname());
 
         User user = User.builder()
                 .userId(dto.getUserId())
@@ -58,32 +58,51 @@ public class UserService {
         return token;
     }
 
-    public UserInfoResponse getInfo(String userId) {
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
-
+    public UserInfoResponse getInfo(org.springframework.security.core.userdetails.User userDetail) {
+        String userId = userDetail(userDetail);
+        User user = findByUserId(userId);
         return new UserInfoResponse(user.getUserId(), user.getNickname());
     }
 
     @Transactional
-    public void updateInfo(String userId, UserRequest dto) {
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
+    public void updateInfo(org.springframework.security.core.userdetails.User userDetail, UserRequest dto) {
+        String userId = userDetail(userDetail);
+        User user = findByUserId(userId);
 
-        findByNickname(dto.getNickname());
-        user.setPassword(encoder.encode(dto.getPassword()));
-        if (dto.getNickname() != null) user.setNickname(dto.getNickname());
+        nicknameExists(dto.getNickname());
+        user.modifyNickname(dto.getNickname());
 
         userRepository.save(user);
     }
 
     @Transactional
-    public void deleteByUserId(String userId) {
-        Optional<User> user = userRepository.findByUserId(userId);
-        if (user.isPresent()) {
-            userRepository.deleteByUserId(userId)
-                    .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
-        }
+    public void deleteByUserId(org.springframework.security.core.userdetails.User userDetail) {
+        String userId = userDetail(userDetail);
+        findByUserId(userId);
+        userRepository.deleteByUserId(userId);
+    }
+
+    public void userExists(String userId) {
+        userRepository.findByUserId(userId)
+                .ifPresent(user -> {
+                    throw new CustomException(ResponseCode.USER_ALREADY_EXIST);
+                });
+    }
+
+    public void nicknameExists(String nickname) {
+        userRepository.findByNickname(nickname)
+                .ifPresent(user -> {
+                    throw new CustomException(ResponseCode.NICKNAME_ALREADY_EXIST);
+                });
+    }
+
+    public String userDetail(org.springframework.security.core.userdetails.User user) {
+        return user.getUsername();
+    }
+
+    public User findByUserId(String userId) {
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
     }
 
     public UserNicknameResponse getNickname(String userId) {
@@ -91,19 +110,5 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
 
         return new UserNicknameResponse(user.getNickname());
-    }
-
-    public void findByUserId(String userId) {
-        userRepository.findByUserId(userId)
-                .ifPresent(user -> {
-                    throw new CustomException(ResponseCode.USER_ALREADY_EXIST);
-                });
-    }
-
-    public void findByNickname(String nickname) {
-        userRepository.findByNickname(nickname)
-                .ifPresent(user -> {
-                    throw new CustomException(ResponseCode.NICKNAME_ALREADY_EXIST);
-                });
     }
 }

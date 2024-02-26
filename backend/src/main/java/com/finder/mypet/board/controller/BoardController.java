@@ -70,19 +70,24 @@ public class BoardController {
 
         return new ResponseEntity<>(Response.create(GET_BOARDS, boardList), GET_BOARDS.getHttpStatus());
     }
-/*
-    // 키워드 검색(제목만 가능)
-    @GetMapping("/boards/search")
-    public ResponseEntity<?> searchKeyword(@RequestParam("search") String search,
-                                           @RequestParam(required = false, defaultValue = "1", value = "page")Integer pageNo) {
-        Page<BoardAllInfoResponse> boardList = boardService.searchKeyword(search, pageNo);
+//
+//    // 키워드 검색(제목만 가능)
+//    @GetMapping("/boards/search")
+//    public ResponseEntity<?> searchKeyword(@RequestParam("search") String search,
+//                                           @RequestParam(required = false, defaultValue = "1", value = "page")Integer pageNo) {
+//        Page<BoardAllInfoResponse> boardList = boardService.searchKeyword(search, pageNo);
+//
+//        return new ResponseEntity<>(boardList, HttpStatus.OK);
+//    }
 
-        return new ResponseEntity<>(boardList, HttpStatus.OK);
-    }
-
-
- */
-    // 수정 삭제 시, 해당 글 작성자가 일치하는지 확인 코드 빠졌음 !!
+//    // 작성자 검색하기 []
+//    @GetMapping("/boards/writer")
+//    public ResponseEntity<?> searchKeyword(@RequestParam("writer") String writer,
+//                                           @RequestParam(required = false, defaultValue = "1", value = "page")Integer pageNo) {
+//        Page<BoardAllInfoResponse> boardList = boardService.searchKeyword(writer, pageNo);
+//
+//        return new ResponseEntity<>(boardList, HttpStatus.OK);
+//    }
 
     // 게시글 수정 [ㅇ]
     @PutMapping("/user/board/{boardId}")
