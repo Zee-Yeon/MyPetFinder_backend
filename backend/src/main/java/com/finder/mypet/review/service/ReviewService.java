@@ -32,8 +32,7 @@ public class ReviewService {
 
     @Transactional
     public void save(org.springframework.security.core.userdetails.User userDetail, ReviewRequest dto) {
-        String userId = userService.userDetail(userDetail);
-        User user = userService.findByUserId(userId);
+        User user = userService.userDetail(userDetail);
 
         Review review = Review.builder()
                 .writer(user)
@@ -53,14 +52,14 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public Page<ReviewAllInfoResponse> readAll(Integer pageNo, Long shelterId) {
+        if (pageNo == null) pageNo = 1;
         Pageable pageable = PageRequest.of(pageNo - 1, 20, Sort.Direction.DESC, "rating");
         return reviewRepository.findAllByShelter(shelterId, pageable).map(ReviewAllInfoResponse::dto);
     }
 
     @Transactional
     public void edit(org.springframework.security.core.userdetails.User userDetail, Long reviewId, ReviewRequest reviewRequest) {
-        String userId = userService.userDetail(userDetail);
-        User user = userService.findByUserId(userId);
+        User user = userService.userDetail(userDetail);
         Review review = findByReviewId(reviewId);
 
         checkWriter(user, review);
@@ -69,8 +68,7 @@ public class ReviewService {
 
     @Transactional
     public void delete(org.springframework.security.core.userdetails.User userDetail, Long reviewId) {
-        String userId = userService.userDetail(userDetail);
-        User user = userService.findByUserId(userId);
+        User user = userService.userDetail(userDetail);
         Review review = findByReviewId(reviewId);
 
         checkWriter(user, review);

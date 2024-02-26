@@ -37,7 +37,6 @@ public class ReviewController {
     @GetMapping("/review/{reviewId}")
     public ResponseEntity<?> getBoard(@PathVariable("reviewId") Long reviewId) {
         ReviewInfoResponse review = reviewService.getReview(reviewId);
-
         return new ResponseEntity<>(Response.create(GET_REVIEW, review), GET_REVIEW.getHttpStatus());
     }
 
@@ -45,17 +44,14 @@ public class ReviewController {
     @GetMapping("/reviews/{shelter}")
     public ResponseEntity<?> readAll(@RequestParam(required = false, defaultValue = "1", value = "page") Integer pageNo,
                                      @PathVariable(name = "shelter", required = false) Long shelterId) {
-        if (pageNo == null) pageNo = 1;
-
         Page<ReviewAllInfoResponse> reviewList =  reviewService.readAll(pageNo, shelterId);
-
         return new ResponseEntity<>(Response.create(GET_REVIEWS, reviewList), GET_REVIEWS.getHttpStatus());
     }
 
     // 리뷰 수정 [ㅇ]
     @PutMapping("/user/review/{reviewId}")
-    public ResponseEntity<?> edit(@AuthenticationPrincipal User user, @PathVariable("reviewId") Long reviewId, @RequestBody ReviewRequest dto) {
-        reviewService.edit(user, reviewId, dto);
+    public ResponseEntity<?> edit(@AuthenticationPrincipal User user, @PathVariable("reviewId") Long reviewId, @RequestBody ReviewRequest reviewRequest) {
+        reviewService.edit(user, reviewId, reviewRequest);
         return new ResponseEntity<>(Response.create(EDIT_REVIEW, null), EDIT_REVIEW.getHttpStatus());
     }
 
