@@ -91,12 +91,8 @@ public class BoardService {
 //        return board;
 //    }
 //    @Transactional(readOnly = true)
-//    public Page<BoardAllInfoResponse> searchKeyword(String writer, Integer pageNo) {
-//
-//        Pageable pageable = PageRequest.of(pageNo-1, 10, Sort.Direction.DESC, "registered");
-//        Page<BoardAllInfoResponse> board = boardRepository.findAllByWriterContaining(writer, pageable).map(BoardAllInfoResponse::dto);
-//
-//        return board;
+//    public Page<BoardAllInfoResponse> searchWriter(String userId) {
+//        return boardRepository.findByWriter(userId).map(BoardAllInfoResponse::dto);
 //    }
 
     @Transactional
@@ -130,8 +126,8 @@ public class BoardService {
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_BOARD));
     }
 
-    private static void checkCategory(BoardRequest dto) {
-        if (!(dto.getCategory().equals(Category.QA) || dto.getCategory().equals(Category.COMMUNITY))) {
+    private void checkCategory(BoardRequest boardRequest) {
+        if (!(boardRequest.getCategory().equals(Category.QA) || boardRequest.getCategory().equals(Category.COMMUNITY))) {
             throw new CustomException(ResponseCode.BAD_REQUEST);
         }
     }

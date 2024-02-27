@@ -75,13 +75,11 @@ public class BoardController {
 //        return new ResponseEntity<>(boardList, HttpStatus.OK);
 //    }
 
-//    // 작성자 검색하기 []
+    // 작성자 검색하기 []
 //    @GetMapping("/boards/writer")
-//    public ResponseEntity<?> searchKeyword(@RequestParam("writer") String writer,
-//                                           @RequestParam(required = false, defaultValue = "1", value = "page")Integer pageNo) {
-//        Page<BoardAllInfoResponse> boardList = boardService.searchKeyword(writer, pageNo);
-//
-//        return new ResponseEntity<>(boardList, HttpStatus.OK);
+//    public ResponseEntity<?> searchWriter(@AuthenticationPrincipal User user) {
+//        Page<BoardAllInfoResponse> boardList = boardService.searchWriter(user.getUsername());
+//        return new ResponseEntity<>(Response.create(GET_BOARD, boardList), GET_BOARD.getHttpStatus());
 //    }
 
     // 게시글 수정 [ㅇ]

@@ -11,14 +11,25 @@ spring:
     username: sa
     password: 1234
 
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/mypetfinder
+#    username: root
+#    password: 1234
+
 
   jpa:
     hibernate:
       ddl-auto: update
+
     properties:
       hibernate:
         format_sql: true
         show_sql: true
+
+
+#    database: mysql
+#    database-platform: org.hibernate.dialect.MySQL8Dialect
 
 #server:
 #  port: 8081
