@@ -97,11 +97,6 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
     }
 
-    public User findByUserId(String userId) {
-        return userRepository.findByUserId(userId)
-                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
-    }
-
     public UserNicknameResponse getNickname(String userId) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
