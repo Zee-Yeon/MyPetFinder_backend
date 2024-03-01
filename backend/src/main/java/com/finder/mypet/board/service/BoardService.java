@@ -82,18 +82,18 @@ public class BoardService {
         return board;
     }
 
-//    @Transactional(readOnly = true)
-//    public Page<BoardAllInfoResponse> searchKeyword(String search, Integer pageNo) {
-//
-//        Pageable pageable = PageRequest.of(pageNo-1, 10, Sort.Direction.DESC, "registered");
-//        Page<BoardAllInfoResponse> board = boardRepository.findAllByTitleContaining(search, pageable).map(BoardAllInfoResponse::dto);
-//
-//        return board;
-//    }
-//    @Transactional(readOnly = true)
-//    public Page<BoardAllInfoResponse> searchWriter(String userId) {
-//        return boardRepository.findByWriter(userId).map(BoardAllInfoResponse::dto);
-//    }
+    @Transactional(readOnly = true)
+    public Page<BoardAllInfoResponse> searchKeyword(String search, Integer pageNo) {
+
+        Pageable pageable = PageRequest.of(pageNo-1, 10, Sort.Direction.DESC, "registered");
+        Page<BoardAllInfoResponse> board = boardRepository.findAllByTitleContaining(search, pageable).map(BoardAllInfoResponse::dto);
+
+        return board;
+    }
+    @Transactional(readOnly = true)
+    public Page<BoardAllInfoResponse> searchWriter(String userId) {
+        return boardRepository.findByWriter(userId).map(BoardAllInfoResponse::dto);
+    }
 
     @Transactional
     public void edit(org.springframework.security.core.userdetails.User userDetail, Long boardId, BoardRequest boardRequest) {

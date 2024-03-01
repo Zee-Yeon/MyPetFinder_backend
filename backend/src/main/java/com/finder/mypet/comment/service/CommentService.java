@@ -1,19 +1,15 @@
 package com.finder.mypet.comment.service;
 
 import com.finder.mypet.board.domain.entity.Board;
-import com.finder.mypet.board.domain.repository.BoardRepository;
 import com.finder.mypet.board.service.BoardService;
 import com.finder.mypet.comment.domain.entity.Comment;
 import com.finder.mypet.comment.domain.repository.CommentRepository;
 import com.finder.mypet.comment.dto.request.CommentRequest;
 import com.finder.mypet.common.advice.exception.CustomException;
 import com.finder.mypet.common.response.ResponseCode;
-import com.finder.mypet.review.domain.entity.Review;
 import com.finder.mypet.user.domain.entity.User;
-import com.finder.mypet.user.domain.repository.UserRepository;
 import com.finder.mypet.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

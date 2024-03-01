@@ -6,13 +6,9 @@ import com.finder.mypet.board.dto.response.BoardAllInfoResponse;
 import com.finder.mypet.board.dto.response.BoardInfoResponse;
 import com.finder.mypet.board.service.BoardService;
 import com.finder.mypet.common.response.Response;
-import com.finder.mypet.common.response.ResponseCode;
-import com.finder.mypet.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
@@ -41,7 +37,7 @@ public class BoardController {
         BoardInfoResponse board = boardService.getBoard(user, boardId);
         return new ResponseEntity<>(Response.create(GET_BOARD, board), GET_BOARD.getHttpStatus());
     }
-/*
+
     // 게시글 전체 조회 (커뮤니티 + Q&A)
     @GetMapping("/boards")
     public ResponseEntity<?> readAll(@RequestParam(required = false) Category category,
@@ -50,10 +46,9 @@ public class BoardController {
 
         Page<BoardAllInfoResponse> boardList = boardService.readAll(pageNo);
 
-        return new ResponseEntity<>(boardList, HttpStatus.OK);
+        return new ResponseEntity<>(Response.create(GET_BOARDS, boardList), GET_BOARDS.getHttpStatus());
     }
 
- */
     // 게시글 카테고리별 조회 [ㅇ]
     @GetMapping("/boards")
     public ResponseEntity<?> readCategory(@RequestParam(required = false) Category category,
@@ -65,22 +60,23 @@ public class BoardController {
 
         return new ResponseEntity<>(Response.create(GET_BOARDS, boardList), GET_BOARDS.getHttpStatus());
     }
-//
-//    // 키워드 검색(제목만 가능)
-//    @GetMapping("/boards/search")
-//    public ResponseEntity<?> searchKeyword(@RequestParam("search") String search,
-//                                           @RequestParam(required = false, defaultValue = "1", value = "page")Integer pageNo) {
-//        Page<BoardAllInfoResponse> boardList = boardService.searchKeyword(search, pageNo);
-//
-//        return new ResponseEntity<>(boardList, HttpStatus.OK);
-//    }
 
-    // 작성자 검색하기 []
-//    @GetMapping("/boards/writer")
-//    public ResponseEntity<?> searchWriter(@AuthenticationPrincipal User user) {
-//        Page<BoardAllInfoResponse> boardList = boardService.searchWriter(user.getUsername());
-//        return new ResponseEntity<>(Response.create(GET_BOARD, boardList), GET_BOARD.getHttpStatus());
-//    }
+
+    // 키워드 검색(제목만 가능) [ㅇ]
+    @GetMapping("/boards/search")
+    public ResponseEntity<?> searchKeyword(@RequestParam("search") String search,
+                                           @RequestParam(required = false, defaultValue = "1", value = "page")Integer pageNo) {
+        Page<BoardAllInfoResponse> boardList = boardService.searchKeyword(search, pageNo);
+
+        return new ResponseEntity<>(Response.create(GET_BOARD, boardList), GET_BOARD.getHttpStatus());
+    }
+
+    // 작성자 검색하기 [ㅇ]
+    @GetMapping("/boards/writer")
+    public ResponseEntity<?> searchWriter(@AuthenticationPrincipal User user) {
+        Page<BoardAllInfoResponse> boardList = boardService.searchWriter(user.getUsername());
+        return new ResponseEntity<>(Response.create(GET_BOARD, boardList), GET_BOARD.getHttpStatus());
+    }
 
     // 게시글 수정 [ㅇ]
     @PutMapping("/user/board/{boardId}")

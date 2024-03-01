@@ -1,8 +1,6 @@
 package com.finder.mypet.user.controller;
 
-import com.finder.mypet.common.advice.exception.CustomException;
 import com.finder.mypet.common.response.Response;
-import com.finder.mypet.common.response.ResponseCode;
 import com.finder.mypet.jwt.dto.response.JwtResponse;
 import com.finder.mypet.user.dto.request.UserRequest;
 import com.finder.mypet.user.dto.request.UserLoginRequest;
@@ -11,11 +9,9 @@ import com.finder.mypet.user.dto.response.UserNicknameResponse;
 import com.finder.mypet.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import static com.finder.mypet.common.response.ResponseCode.*;

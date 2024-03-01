@@ -56,12 +56,12 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("http://10.125.121.182:3000");
-        config.addAllowedMethod("*"); // 교차를 허용할 Method
-        config.addAllowedHeader("*"); // 교차를 허용할 Header
+        config.addAllowedMethod("*");
+        config.addAllowedHeader("*");
         config.addExposedHeader("Authorization");
         config.addExposedHeader("username");
         config.addExposedHeader("Location");
-        config.setAllowCredentials(true); // 요청/응답에 자격증명정보 포함을 허용
+        config.setAllowCredentials(true);
 
         source.registerCorsConfiguration("/**", config);
 

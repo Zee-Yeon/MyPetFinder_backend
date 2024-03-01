@@ -1,7 +1,6 @@
 package com.finder.mypet.review.controller;
 
 import com.finder.mypet.common.response.Response;
-import com.finder.mypet.common.response.ResponseCode;
 import com.finder.mypet.review.dto.request.ReviewRequest;
 import com.finder.mypet.review.dto.response.ReviewAllInfoResponse;
 import com.finder.mypet.review.dto.response.ReviewInfoResponse;
@@ -9,13 +8,11 @@ import com.finder.mypet.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 import static com.finder.mypet.common.response.ResponseCode.*;
 

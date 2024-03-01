@@ -8,7 +8,6 @@ import com.finder.mypet.review.dto.request.ReviewRequest;
 import com.finder.mypet.review.dto.response.ReviewAllInfoResponse;
 import com.finder.mypet.review.dto.response.ReviewInfoResponse;
 import com.finder.mypet.user.domain.entity.User;
-import com.finder.mypet.user.domain.repository.UserRepository;
 import com.finder.mypet.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,11 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.module.FindException;
 
 @Service
 @RequiredArgsConstructor
