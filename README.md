@@ -9,14 +9,13 @@
 
 # 기능
 - 유기동물 보호소 조회
-- 유기동물 리스트 조
+- 유기동물 리스트 조회
 - 보호소별 리뷰 작성
 - 자유게시판 (COMMUNITY, Q&A)
-- 자유게시판 조회(최신순, 별점순, 작성자)
+- 자유게시판 조회(작성자, 최신순, 별점순)
 
 # 백앤드 아키텍쳐
   
-
 ![java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
 ![spring security](https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=Spring-Security&logoColor=white)
