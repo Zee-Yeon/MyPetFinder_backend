@@ -8,12 +8,12 @@
 # 기능
 - 유기동물
     - 보호소 조회
-    - 보호 동물 조회
-- 보호소별 리뷰 작성
+    - 보호 동물 조회      
+- 보호소별 리뷰 작성 
 - 자유게시판
-    -(COMMUNITY, Q&A)
-    -작성자, 최신순, 조회순, 별점순 조회
-
+    - (COMMUNITY, Q&A)
+    - 작성자, 최신순, 조회순, 별점순 조회
+      
 # 백앤드 아키텍쳐
   
 ![java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
